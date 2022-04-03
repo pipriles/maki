@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1",
+    "commandType": "EXTRACT_TEXT",
+    "description": "",
+    "parameters": {
+      "locator": { "query": "", "queryType": "CSS", "elementIndex": 0 },
+      "strip": true,
+      "collection": false,
+      "regex": ""
+    }
+  },
+  {
+    "id": "2",
+    "commandType": "CLICK",
+    "description": "",
+    "parameters": {
+      "locator": { "query": "", "queryType": "CSS", "elementIndex": 0 }
+    }
+  }
+]
+
