@@ -119,6 +119,12 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
     );
   };
 
+  const onMoreClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setContextMenu(
+      (contextMenu === undefined) ? ({ left: event.clientX, top: event.clientY }) : undefined
+    );
+  };
+
   const onCommandDelete = () => {
     dispatch(removeCommand(index));
   };
@@ -134,7 +140,7 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
           onChange={onCommandTypeChange}
         />
         <div className={styles.icons}>
-          <button>
+          <button onClick={onMoreClick}>
             <MdMoreVert />
           </button>
         </div>
