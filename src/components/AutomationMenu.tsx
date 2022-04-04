@@ -4,8 +4,9 @@ import { createAppUseStyles } from '../styles';
 import CurrentTab from './CurrentTab';
 import CommandList from './CommandList';
 import CommandInput from './CommandInput';
+import CommandParameters from './CommandParameters';
 
-const useStyles = createAppUseStyles({
+const useStyles = createAppUseStyles(theme => ({
   root: {
     display: "flex",
     height: "100%",
@@ -13,9 +14,9 @@ const useStyles = createAppUseStyles({
   inner: {
     display: "flex",
     flexDirection: "column",
-    width: "100%",
+    flexGrow: 1,
   },
-});
+}));
 
 const AutomationMenu = () => {
 
@@ -28,6 +29,7 @@ const AutomationMenu = () => {
         <CommandList />
         <CommandInput />
       </div>
+      <CommandParameters />
     </div>
   );
 };

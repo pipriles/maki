@@ -1,0 +1,41 @@
+{
+  "EXTRACT_TEXT": [
+    "LOCATOR",
+    "STRIP",
+    "COLLECTION",
+    "REGEX"
+  ],
+  "EXTRACT_ATTRIBUTE": [
+    "LOCATOR",
+    "ATTRIBUTE",
+    "STRIP",
+    "COLLECTION",
+    "REGEX"
+  ],
+  "EXTRACT_URL": [
+    "REGEX"
+  ],
+  "EXTRACT_TITLE": [
+    "REGEX"
+  ],
+  "WAIT_FOR_ELEMENT_PRESENT" : [
+    "LOCATOR",
+    "TIMEOUT"
+  ],
+  "WAIT_FOR_ELEMENT_NOT_PRESENT" : [
+    "LOCATOR",
+    "TIMEOUT"
+  ],
+  "PAGE_WAIT" : [
+  ],
+  "CLICK" : [
+    "LOCATOR"
+  ],
+  "SEND_KEYS" : [
+    "LOCATOR",
+    "TEXT"
+  ],
+  "OPEN": [
+    "URL"
+  ]
+}

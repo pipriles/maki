@@ -31,8 +31,6 @@ const CommandInput = () => {
   const dispatch = useAppDispatch();
   const styles = useStyles();
 
-  console.log(command);
-
   if (command === undefined)
     return null;
 
@@ -42,7 +40,6 @@ const CommandInput = () => {
   };
 
   const onCommandDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
     const payload = { id: command.id, description: event.target.value }
     dispatch(changeCommand(payload))
   };

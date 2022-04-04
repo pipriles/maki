@@ -18,6 +18,7 @@ const useStyles = createAppUseStyles(theme => ({
     cursor: "pointer",
     backgroundColor: theme.lighten(theme.palette.background, 0.15),
     borderLeft: ["2px", "solid", theme.lighten(theme.palette.background, 0.5)],
+    borderBottom: ["1px", "solid", theme.lighten(theme.palette.background, 0.5)],
     '&:hover': {
       backgroundColor: theme.lighten(theme.palette.background, 0.5),
       '& > $icons': {
@@ -29,6 +30,7 @@ const useStyles = createAppUseStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    flexShrink: 0,
     width: 30,
     padding: [theme.spacing(1), theme.spacing(0.5)],
     fontSize: theme.sizes(1.5),
@@ -41,7 +43,7 @@ const useStyles = createAppUseStyles(theme => ({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    borderBottom: ["1px", "solid", theme.lighten(theme.palette.background, 0.5)],
+    borderBottom: "none",
     cursor: "pointer",
   },
   current: {

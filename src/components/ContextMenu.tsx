@@ -47,8 +47,6 @@ const ContextMenu = ({ children, className, open, position }: ContextMenuProps) 
     elementPosition.top = `min(${position.top}px, calc(100% - ${height}px))`;
   }
 
-  console.log(width, height);
-
   return (
     <div ref={element} className={rootClassName.join(" ")} style={elementPosition}>
       {children}

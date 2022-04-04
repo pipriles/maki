@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import COMMANDS from '../defaults/commands.json';
+import CommandTypes from '../../constants/commandTypes.json';
 
 interface ILocatorParameter {
   query: string;
@@ -9,8 +10,8 @@ interface ILocatorParameter {
 }
 
 interface ICoordinatesParameter {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
 }
 
 export interface ICommand {
@@ -34,11 +35,11 @@ export interface ICommandParameters {
 
 const initialState: ICommand[] = COMMANDS;
 
-export const commandFactory = () => ({
+export const commandFactory = (): ICommand => ({
   id: uuidv4(),
   commandType: "",
   description: "",
-  parameters: {} as ICommandParameters,
+  parameters: {},
 });
 
 export const commandSlice = createSlice({
@@ -59,9 +60,74 @@ export const commandSlice = createSlice({
         command => 
         command.id !== action.payload.id ? command : { ...command, ...action.payload }
       );
-    }
+    },
   }
 });
+
+const defaultParameterTypes: {
+  [K in keyof ICommandParameters as Uppercase<K>]: ICommandParameters[K]
+} = {
+  "LOCATOR": {
+    "query": "",
+    "queryType": "CSS",
+    "elementIndex": undefined
+  },
+  "TEXT": "",
+  "URL": "",
+  "TIMEOUT": 1000,
+  "COORDINATES": {
+    "x": undefined,
+    "y": undefined
+  },
+  "STRIP": true,
+  "COLLECTION": false,
+  "ATTRIBUTE": "",
+  "REGEX": ""
+};
+
+function hasPropertyType<X extends {}, Y extends PropertyKey>
+  (obj: X, prop: Y): obj is X & Record<Y, keyof typeof defaultParameterTypes> {
+  return obj.hasOwnProperty(prop)
+}
+
+function hasCommandType<X extends {}, Y extends PropertyKey>
+  (obj: X, prop: Y): obj is X & Record<Y, Uppercase<keyof ICommandParameters>[]> {
+  return obj.hasOwnProperty(prop)
+}
+
+const initializeParameter = (parameterType?: string) => {
+
+  if ( parameterType === undefined || !(hasPropertyType(defaultParameterTypes, parameterType)))
+    return undefined;
+
+  return defaultParameterTypes[parameterType];
+};
+
+const initializeCommandType = (commandType?: string) => {
+
+  if (commandType === undefined || !(hasCommandType(CommandTypes, commandType)))
+    return {};
+
+  const parameters = CommandTypes[commandType];
+  let payload: ICommandParameters = parameters.reduce((obj, k) => (
+    { ...obj, [k]: initializeParameter(k) }
+  ), {})
+
+  return { parameters: payload };
+};
+
+const mergeCommand = (command: ICommand, payload: Partial<ICommand>) => {
+
+  const commandType = payload.commandType;
+  let parameters: { parameters?: ICommandParameters } = {};
+
+  // we are changing the command type
+  if (commandType !== undefined) {
+    parameters = initializeCommandType(commandType);
+  }
+  
+  return { ...command, ...parameters, ...payload };
+};
 
 export const { addCommand, removeCommand, changeCommand } = commandSlice.actions;
 

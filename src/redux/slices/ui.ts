@@ -14,7 +14,6 @@ export const uiSlice = createSlice({
   initialState,
   reducers: {
     changeCurrentCommand: (state: IUi, action: PayloadAction<IUi['currentCommand']>) => {
-      console.log(action.payload);
       return { ...state, currentCommand: action.payload };
     }
   }
