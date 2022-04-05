@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ICommand } from './command';
+import { Command } from './command';
 
 export interface IUi {
-  currentCommand?: ICommand['id'];
+  currentCommand?: Command['id'];
 }
 
 const initialState: IUi = {

@@ -4,9 +4,21 @@
     "commandType": "EXTRACT_TEXT",
     "description": "",
     "parameters": {
-      "locator": { "query": "", "queryType": "CSS", "elementIndex": 0 },
+      "locator": {
+        "query": "",
+        "queryType": "CSS",
+        "elementIndex": null
+      },
+      "text": "",
+      "url": "",
+      "timeout": 1000,
+      "coordinates": {
+        "x": null,
+        "y": null
+      },
       "strip": true,
       "collection": false,
+      "attribute": "",
       "regex": ""
     }
   },
@@ -15,7 +27,22 @@
     "commandType": "CLICK",
     "description": "",
     "parameters": {
-      "locator": { "query": "", "queryType": "CSS", "elementIndex": 0 }
+      "locator": {
+        "query": "",
+        "queryType": "CSS",
+        "elementIndex": null
+      },
+      "text": "",
+      "url": "",
+      "timeout": 1000,
+      "coordinates": {
+        "x": null,
+        "y": null
+      },
+      "strip": true,
+      "collection": false,
+      "attribute": "",
+      "regex": ""
     }
   }
 ]

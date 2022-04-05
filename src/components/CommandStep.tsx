@@ -7,7 +7,7 @@ import { changeCurrentCommand } from '../redux/slices/ui';
 import { addCommand, removeCommand, changeCommand } from '../redux/slices/command';
 import { getCurrentCommand } from '../redux/selectors';
 import { createAppUseStyles } from '../styles';
-import { ICommand } from '../redux/slices/command';
+import { Command } from '../redux/slices/command';
 
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
@@ -77,7 +77,7 @@ const useStyles = createAppUseStyles(theme => ({
 }));
 
 interface CommandStepProps {
-  command: ICommand;
+  command: Command;
   index: number;
 }
 

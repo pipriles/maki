@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { finder } from '@medv/finder';
-import { ICommand } from './redux/slices/command';
+import { Command } from './redux/slices/command';
 
 console.log('Listening to commands...');
 
@@ -12,7 +12,7 @@ interface ILocator {
 
 interface IMessage {
   type: string;
-  payload?: ICommand;
+  payload?: Command;
 }
 
 interface IResponse<T> {
@@ -39,7 +39,7 @@ const getElement = (locator: ILocator) => {
   return !query ? null : extractor(query);
 };
 
-const extractText = async ({ parameters }: ICommand) => {
+const extractText = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
   const element = locator ? getElement(locator) : null;
@@ -52,7 +52,7 @@ const extractText = async ({ parameters }: ICommand) => {
   return string && stripText ? string.trim() : string;
 };
 
-const extractAttribute = async ({ parameters }: ICommand) => {
+const extractAttribute = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
   const element = locator ? getElement(locator) : null;
@@ -75,7 +75,7 @@ const extractTitle = async () => {
   return document.title;
 };
 
-const doClick = async ({ parameters }: ICommand) => {
+const doClick = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
   const element = locator ? getElement(locator) : null;
@@ -88,7 +88,7 @@ const doClick = async ({ parameters }: ICommand) => {
   return element.click()
 };
 
-const waitForElementPresent = async ({ parameters }: ICommand) => {
+const waitForElementPresent = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
   const timeout = parameters['timeout'];
@@ -105,7 +105,7 @@ const waitForElementPresent = async ({ parameters }: ICommand) => {
   return true;
 };
 
-const waitForElementNotPresent = async ({ parameters }: ICommand) => {
+const waitForElementNotPresent = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
   const timeout = parameters['timeout'];
@@ -122,7 +122,7 @@ const waitForElementNotPresent = async ({ parameters }: ICommand) => {
   return true;
 };
 
-const sendKeys = async ({ parameters }: ICommand) => {
+const sendKeys = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
   const keys  = parameters['text'];
@@ -166,7 +166,7 @@ const pageWait = () => {
   });
 };
 
-const openUrl = async ({ parameters }: ICommand) => {
+const openUrl = async ({ parameters }: Command) => {
   const url = parameters['url'];
 
   if (!url) return;
@@ -202,7 +202,7 @@ const commandExecutorMap = {
   // 'CLEAR_INPUT' clear input value
 };
 
-const executeCommand = async (command: ICommand) => {
+const executeCommand = async (command: Command) => {
 
   console.log(command);
   const action = commandExecutorMap[command.commandType as keyof typeof commandExecutorMap];
