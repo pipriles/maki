@@ -32,6 +32,10 @@ export interface Command {
   parameters: CommandParameters;
 }
 
+export interface CommandPayload extends Omit<Partial<Command>, 'parameters'> { 
+  parameters?: Partial<CommandParameters>
+}
+
 const defaultParameters: CommandParameters = {
   "locator": {
     "query": "",
@@ -73,14 +77,19 @@ export const commandSlice = createSlice({
       const commandIndex = action.payload;
       return state.filter((_, index) => index !== commandIndex);
     },
-    changeCommand: (state: Command[], action: PayloadAction<Partial<Command>>) => {
+    changeCommand: (state: Command[], action: PayloadAction<CommandPayload>) => {
       return state.map(
         command => 
-        command.id !== action.payload.id ? command : { ...command, ...action.payload }
+        command.id !== action.payload.id ? command : updateCommand(command, action.payload)
       );
     },
   }
 });
+
+const updateCommand = (command: Command, payload: CommandPayload) => {
+  const parameters = { ...command.parameters, ...payload?.parameters };
+  return { ...command, ...payload, parameters: parameters };
+};
 
 export const { addCommand, removeCommand, changeCommand } = commandSlice.actions;
 

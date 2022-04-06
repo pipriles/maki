@@ -1,9 +1,11 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
-import { useAppSelector } from '../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { getCurrentCommand } from '../redux/selectors';
-
+import { Command, CommandPayload, CommandParameters, changeCommand } from '../redux/slices/command';
 import CommandTypes from '../constants/commandTypes.json';
+
+import CommandParameter from './CommandParameter';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -13,23 +15,64 @@ const useStyles = createAppUseStyles(theme => ({
   },
 }));
 
-const CommandParameters = () => {
+const hasOwnProperty = <X extends {}>(obj: X, key: PropertyKey): key is keyof X => {
+  return obj.hasOwnProperty(key);
+}
+
+const CommandParametersComponent = () => {
 
   const styles = useStyles();
+  const dispatch = useAppDispatch();
   const currentCommand = useAppSelector(getCurrentCommand);
-
-  console.log(currentCommand);
 
   if (currentCommand === undefined)
     return null;
 
-  console.log(currentCommand.parameters)
+  if (!hasOwnProperty(CommandTypes, currentCommand.commandType)) 
+    return null;
+
+  const parameters = CommandTypes[currentCommand.commandType]
+  const currentParameters = currentCommand.parameters;
+
+  const handleChange = (
+    parameterType: keyof CommandParameters
+  ) => (
+    payload: Partial<CommandParameters[typeof parameterType]>
+  ) => {
+    const updated: CommandPayload = { 
+      id: currentCommand.id, 
+      parameters: {
+        [parameterType]: payload 
+      }
+    }
+    dispatch(changeCommand(updated));
+  };
+
+  const renderParameters = parameters.map(key => {
+
+    const propertyKey = key.toLowerCase();
+
+    if (!hasOwnProperty(currentParameters, propertyKey)) 
+      return null;
+
+    return (
+      <CommandParameter 
+        key={propertyKey}
+        parameterType={propertyKey} 
+        parameter={currentParameters[propertyKey]} 
+        onChange={handleChange(propertyKey)} 
+      />
+    )
+  });
+
+  if (!renderParameters)
+    return null;
 
   return (
     <div className={styles.root}>
-      <span>Parameters</span>
+      {renderParameters}
     </div>
   );
 };
 
-export default CommandParameters;
+export default CommandParametersComponent;

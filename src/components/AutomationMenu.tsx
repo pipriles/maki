@@ -4,7 +4,7 @@ import { createAppUseStyles } from '../styles';
 import CurrentTab from './CurrentTab';
 import CommandList from './CommandList';
 import CommandInput from './CommandInput';
-import CommandParameters from './CommandParameters';
+import CommandParametersComponent from './CommandParameters';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -29,7 +29,7 @@ const AutomationMenu = () => {
         <CommandList />
         <CommandInput />
       </div>
-      <CommandParameters />
+      <CommandParametersComponent />
     </div>
   );
 };
