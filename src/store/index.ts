@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { Selector, configureStore } from '@reduxjs/toolkit';
 
 import commandReducer from './slices/command';
 import appReducer from './slices/app';
@@ -11,6 +11,11 @@ export const store = configureStore({
     ui: uiReducer,
   }
 });
+
+export const select = <T>(selector: Selector<RootState, T>): T => {
+  const state = store.getState();
+  return selector(state);
+};
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

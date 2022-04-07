@@ -3,6 +3,7 @@ import { RootState } from './';
 
 export const selectCommands = (state: RootState) => state.commands;
 export const selectUi = (state: RootState) => state.ui;
+export const getActiveTab = (state: RootState) => state.app.activeTab;
 
 export const getCurrentCommand = createSelector(
   [selectCommands, selectUi], 
@@ -12,3 +13,4 @@ export const getCurrentCommand = createSelector(
     }
   }
 );
+

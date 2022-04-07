@@ -1,24 +1,9 @@
 import browser from 'webextension-polyfill';
 import { finder } from '@medv/finder';
 import { Command } from './store/slices/command';
+import { Locator, Message, makeResponse, makeErrorResponse } from './common/utils';
 
 console.log('Listening to commands...');
-
-interface ILocator {
-  query: string;
-  queryType: string;
-  elementIndex?: number | null;
-};
-
-interface IMessage {
-  type: string;
-  payload?: Command;
-}
-
-interface IResponse<T> {
-  type: string;
-  payload: T;
-}
 
 const getElementByXPATH = (query: string) => {
   const result = document.evaluate(
@@ -31,7 +16,7 @@ const getElementByCSS = (query: string, index?: number) => {
   return document.querySelectorAll(query)[index];
 };
 
-const getElement = (locator: ILocator) => {
+const getElement = (locator: Locator) => {
 
   const { query, queryType } = locator;
   const extractor = queryType !== 'XPATH' ? getElementByCSS : getElementByXPATH;
@@ -175,9 +160,6 @@ const openUrl = async ({ parameters }: Command) => {
   return url
 };
 
-const makeResponse      = <T>(payload: T): IResponse<T> => ({ type: 'SUCCESS', payload });
-const makeErrorResponse = <T>(payload: T): IResponse<T> => ({ type: 'ERROR'  , payload });
-
 const responseFromPromise = async <T>(promise: Promise<T>) => {
   try {
     const value = await promise;
@@ -273,7 +255,7 @@ const findElementSelector = () => {
   return responseFromPromise(promise);
 };
 
-const handleMessage = (message: IMessage) => {
+const handleMessage = (message: Message) => {
   switch (message.type) {
     case 'COMMAND':
       if (message.payload != null) 
