@@ -1,6 +1,8 @@
 import React from 'react';
 import { ICommandParametersProps } from './utils';
 
+import Checkbox from './Checkbox';
+
 const StripParameter = ({ 
   parameter, 
   onChange 
@@ -13,16 +15,12 @@ const StripParameter = ({
   };
 
   return (
-    <div>
-      <input 
-        type="checkbox" 
-        checked={parameter} 
-        name="strip" 
-        value="strip" 
-        onChange={handleChange}
-      />
-      <label htmlFor="strip">Strip extracted text</label>
-    </div>
+    <Checkbox 
+      name="strip" 
+      label="Strip extracted text" 
+      checked={parameter} 
+      onChange={handleChange} 
+    />
   );
 }
 

@@ -9,10 +9,14 @@ import CommandParameter from './CommandParameter';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
+    padding: theme.spacing(1),
     flexBasis: 256,
     borderLeft: [1, "solid", theme.palette.primary.main],
     overflow: "hidden",
   },
+  parameter: {
+    marginBottom: theme.spacing(1),
+  }
 }));
 
 const hasOwnProperty = <X extends {}>(obj: X, key: PropertyKey): key is keyof X => {
@@ -25,10 +29,7 @@ const CommandParametersComponent = () => {
   const dispatch = useAppDispatch();
   const currentCommand = useAppSelector(getCurrentCommand);
 
-  if (currentCommand === undefined)
-    return null;
-
-  if (!hasOwnProperty(CommandTypes, currentCommand.commandType)) 
+  if (currentCommand === undefined || !hasOwnProperty(CommandTypes, currentCommand.commandType))
     return null;
 
   const parameters = CommandTypes[currentCommand.commandType]
@@ -56,12 +57,14 @@ const CommandParametersComponent = () => {
       return null;
 
     return (
-      <CommandParameter 
-        key={propertyKey}
-        parameterType={propertyKey} 
-        parameter={currentParameters[propertyKey]} 
-        onChange={handleChange(propertyKey)} 
-      />
+      <div className={styles.parameter}>
+        <CommandParameter 
+          key={propertyKey}
+          parameterType={propertyKey} 
+          parameter={currentParameters[propertyKey]} 
+          onChange={handleChange(propertyKey)} 
+        />
+      </div>
     )
   });
 

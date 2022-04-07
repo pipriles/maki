@@ -1,6 +1,8 @@
 import React from 'react';
 import { ICommandParametersProps } from './utils';
 
+import Checkbox from './Checkbox';
+
 const CollectionParameter = ({ 
   parameter, 
   onChange 
@@ -8,21 +10,16 @@ const CollectionParameter = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const payload = event.target.checked;
-    console.log(payload);
     onChange(payload)
   };
 
   return (
-    <div>
-      <input 
-        type="checkbox" 
-        checked={parameter} 
-        name="collection" 
-        value="collection" 
-        onChange={handleChange}
-      />
-      <label htmlFor="collection">Extract all matches</label>
-    </div>
+    <Checkbox 
+      name="collection" 
+      label="Extract all matches" 
+      checked={parameter} 
+      onChange={handleChange} 
+    />
   );
 }
 
