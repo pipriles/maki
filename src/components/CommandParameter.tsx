@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommandParameters } from '../redux/slices/command';
+import { CommandParameters } from '../store/slices/command';
 import { ICommandParametersProps } from './utils';
 
 import LocatorParameter from './LocatorParameter';

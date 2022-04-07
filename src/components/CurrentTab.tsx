@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppSelector } from '../redux/hooks';
+import { useAppSelector } from '../store/hooks';
 import { createAppUseStyles } from '../styles'
 
 const useStyles = createAppUseStyles(theme => ({

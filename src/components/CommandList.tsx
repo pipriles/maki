@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { createAppUseStyles } from '../styles';
-import { useAppSelector } from '../redux/hooks';
-import { commandFactory } from '../redux/slices/command';
+import { useAppSelector } from '../store/hooks';
+import { commandFactory } from '../store/slices/command';
 
 import CommandStep from './CommandStep';
 

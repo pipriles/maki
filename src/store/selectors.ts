@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from './store';
+import { RootState } from './';
 
 export const selectCommands = (state: RootState) => state.commands;
 export const selectUi = (state: RootState) => state.ui;

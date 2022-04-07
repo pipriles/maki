@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { getCurrentCommand } from '../redux/selectors';
-import { changeCommand } from '../redux/slices/command';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { getCurrentCommand } from '../store/selectors';
+import { changeCommand } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 
 const useStyles = createAppUseStyles((theme) => ({

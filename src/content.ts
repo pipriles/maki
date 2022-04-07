@@ -1,6 +1,6 @@
 import browser from 'webextension-polyfill';
 import { finder } from '@medv/finder';
-import { Command } from './redux/slices/command';
+import { Command } from './store/slices/command';
 
 console.log('Listening to commands...');
 

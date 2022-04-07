@@ -1,4 +1,4 @@
-import { CommandParameters } from '../redux/slices/command';
+import { CommandParameters } from '../store/slices/command';
 
 export interface ICommandParametersProps<T extends keyof CommandParameters> {
   parameter: CommandParameters[T];

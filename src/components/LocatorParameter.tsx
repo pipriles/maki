@@ -19,7 +19,7 @@ const useStyles = createAppUseStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     flexShrink: 0,
-    fontSize: theme.sizes(2.5),
+    fontSize: "1.125em",
   }
 }));
 

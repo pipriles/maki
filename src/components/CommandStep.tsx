@@ -2,12 +2,11 @@ import React from 'react';
 import { batch } from 'react-redux';
 import { MdMoreVert } from 'react-icons/md';
 
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { changeCurrentCommand } from '../redux/slices/ui';
-import { addCommand, removeCommand, changeCommand } from '../redux/slices/command';
-import { getCurrentCommand } from '../redux/selectors';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { getCurrentCommand } from '../store/selectors';
+import { changeCurrentCommand } from '../store/slices/ui';
+import { Command, addCommand, removeCommand, changeCommand } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
-import { Command } from '../redux/slices/command';
 
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';

@@ -4,8 +4,8 @@ import browser from 'webextension-polyfill';
 import { Provider } from 'react-redux';
 import { ThemeProvider } from 'react-jss';
 
-import { store } from './redux/store';
-import { changeActiveTab } from './redux/slices/app';
+import { store } from './store';
+import { changeActiveTab } from './store/slices/app';
 import App from './components/App';
 import { createTheme } from './styles';
 

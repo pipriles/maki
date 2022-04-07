@@ -1,15 +1,15 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { getCurrentCommand } from '../redux/selectors';
-import { Command, CommandPayload, CommandParameters, changeCommand } from '../redux/slices/command';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { getCurrentCommand } from '../store/selectors';
+import { CommandPayload, CommandParameters, changeCommand } from '../store/slices/command';
 import CommandTypes from '../constants/commandTypes.json';
 
 import CommandParameter from './CommandParameter';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
     flexBasis: 256,
     borderLeft: [1, "solid", theme.palette.primary.main],
     overflow: "hidden",
