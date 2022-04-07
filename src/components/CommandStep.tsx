@@ -43,7 +43,7 @@ const useStyles = createAppUseStyles(theme => ({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    borderBottom: "none",
+    border: "none",
     cursor: "pointer",
   },
   current: {

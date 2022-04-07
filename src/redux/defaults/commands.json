@@ -44,6 +44,98 @@
       "attribute": "",
       "regex": ""
     }
+  },
+  {
+    "id": "3",
+    "commandType": "EXTRACT_ATTRIBUTE",
+    "description": "",
+    "parameters": {
+      "locator": {
+        "query": "",
+        "queryType": "CSS",
+        "elementIndex": null
+      },
+      "text": "",
+      "url": "",
+      "timeout": 1000,
+      "coordinates": {
+        "x": null,
+        "y": null
+      },
+      "strip": true,
+      "collection": false,
+      "attribute": "",
+      "regex": ""
+    }
+  },
+  {
+    "id": "4",
+    "commandType": "OPEN",
+    "description": "",
+    "parameters": {
+      "locator": {
+        "query": "",
+        "queryType": "CSS",
+        "elementIndex": null
+      },
+      "text": "",
+      "url": "",
+      "timeout": 1000,
+      "coordinates": {
+        "x": null,
+        "y": null
+      },
+      "strip": true,
+      "collection": false,
+      "attribute": "",
+      "regex": ""
+    }
+  },
+  {
+    "id": "5",
+    "commandType": "CLICK",
+    "description": "",
+    "parameters": {
+      "locator": {
+        "query": "",
+        "queryType": "CSS",
+        "elementIndex": null
+      },
+      "text": "",
+      "url": "",
+      "timeout": 1000,
+      "coordinates": {
+        "x": null,
+        "y": null
+      },
+      "strip": true,
+      "collection": false,
+      "attribute": "",
+      "regex": ""
+    }
+  },
+  {
+    "id": "6",
+    "commandType": "WAIT_FOR_ELEMENT_PRESENT",
+    "description": "",
+    "parameters": {
+      "locator": {
+        "query": "",
+        "queryType": "CSS",
+        "elementIndex": null
+      },
+      "text": "",
+      "url": "",
+      "timeout": 1000,
+      "coordinates": {
+        "x": null,
+        "y": null
+      },
+      "strip": true,
+      "collection": false,
+      "attribute": "",
+      "regex": ""
+    }
   }
 ]
 

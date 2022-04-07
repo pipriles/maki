@@ -36,12 +36,12 @@ const useStyles = createAppUseStyles(theme => ({
     },
     input: {
       outline: "none",
-      border: "none",
       background: "none",
-      borderBottom: ["1px", "solid", theme.palette.primary.main],
+      border: ["1px", "solid", theme.palette.primary.main],
       color: theme.palette.typography.primary,
       padding: theme.spacing(1),
       fontFamily: theme.typography.fontFamily,
+      width: "100%",
     },
     "*::-webkit-scrollbar": {
       width: 3,
