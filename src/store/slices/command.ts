@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import COMMANDS from '../defaults/commands.json';
 
@@ -55,7 +55,12 @@ const defaultParameters: CommandParameters = {
   "regex": ""
 };
 
-const initialState: Command[] = COMMANDS;
+export const commandsAdapter = createEntityAdapter<Command>();
+
+const initialState: EntityState<Command> = {
+  entities: Object.fromEntries(COMMANDS.map(command => [command.id, command])),
+  ids: COMMANDS.map(command => command.id)
+} 
 
 export const commandFactory = (): Command => ({
   id: uuidv4(),
@@ -64,32 +69,42 @@ export const commandFactory = (): Command => ({
   parameters: { ...defaultParameters },
 });
 
-export const commandSlice = createSlice({
-  name: 'commands',
-  initialState,
-  reducers: {
-    addCommand: (state: Command[], action: PayloadAction<Partial<Command> | undefined>) => {
-      const command = action.payload;
-      const defaultCommand = commandFactory();
-      return [ ...state, { ...defaultCommand, ...command ?? {} } ];
-    },
-    removeCommand: (state: Command[], action: PayloadAction<number>) => {
-      const commandIndex = action.payload;
-      return state.filter((_, index) => index !== commandIndex);
-    },
-    changeCommand: (state: Command[], action: PayloadAction<CommandPayload>) => {
-      return state.map(
-        command => 
-        command.id !== action.payload.id ? command : updateCommand(command, action.payload)
-      );
-    },
-  }
-});
+const createNewCommand = (payload?: CommandPayload): Command => {
+  const defaultCommand = commandFactory();
+  return mergeCommand(defaultCommand, payload);
+};
 
-const updateCommand = (command: Command, payload: CommandPayload) => {
+const mergeCommand = (command: Command, payload?: CommandPayload): Command => {
   const parameters = { ...command.parameters, ...payload?.parameters };
   return { ...command, ...payload, parameters: parameters };
 };
+
+export const commandSlice = createSlice({
+  name: 'commands',
+  initialState: commandsAdapter.getInitialState(initialState),
+  reducers: {
+    removeCommand: commandsAdapter.removeOne,
+    addCommand: (state, action: PayloadAction<Partial<Command> | undefined>) => {
+      const command = createNewCommand(action.payload);
+      return commandsAdapter.addOne(state, command)
+    },
+    changeCommand: (state, action: PayloadAction<CommandPayload>) => {
+      const commandId = action.payload.id;
+      if (!commandId) return;
+
+      const command = state.entities[commandId];
+      if (!command) return;
+
+      state.entities[commandId] = mergeCommand(command, action.payload);
+    },
+    insertCommand: (state, action: PayloadAction<number>) => {
+      const command = createNewCommand();
+      commandsAdapter.addOne(state, command);
+      state.ids.pop();
+      state.ids.splice(action.payload, 0, command.id);
+    },
+  }
+});
 
 export const { addCommand, removeCommand, changeCommand } = commandSlice.actions;
 

@@ -3,7 +3,7 @@ import { batch } from 'react-redux';
 import { MdMoreVert } from 'react-icons/md';
 
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { getCurrentCommand } from '../store/selectors';
+import { getCurrentCommand, commandSelectors } from '../store/selectors';
 import { changeCurrentCommand } from '../store/slices/ui';
 import { Command, addCommand, removeCommand, changeCommand } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
@@ -82,7 +82,7 @@ interface CommandStepProps {
 
 const CommandStep = ({ command, index }: CommandStepProps) => {
 
-  const commands = useAppSelector(state => state.commands);
+  const commands = useAppSelector(commandSelectors.selectAll);
   const currentCommand = useAppSelector(getCurrentCommand);
   const dispatch = useAppDispatch();
 
@@ -127,7 +127,15 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
   };
 
   const onCommandDelete = () => {
-    dispatch(removeCommand(index));
+    dispatch(removeCommand(command.id));
+  };
+
+  const onCommandCopy = () => {
+
+  };
+
+  const onCommandPaste = () => {
+
   };
 
   return (

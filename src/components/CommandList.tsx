@@ -3,6 +3,7 @@ import React from 'react';
 import { createAppUseStyles } from '../styles';
 import { useAppSelector } from '../store/hooks';
 import { commandFactory } from '../store/slices/command';
+import { commandSelectors } from '../store/selectors';
 
 import CommandStep from './CommandStep';
 
@@ -17,7 +18,7 @@ const useStyles = createAppUseStyles(theme => ({
 const CommandList = () => {
 
   const styles = useStyles();
-  const commands = useAppSelector(state => state.commands)
+  const commands = useAppSelector(commandSelectors.selectAll)
 
   const fakeCommand = commandFactory();
   const commandSteps = [ ...commands, fakeCommand ];
@@ -25,6 +26,8 @@ const CommandList = () => {
   const renderCommands = commandSteps.map(
     (command, index) => <CommandStep command={command} index={index} key={command.id} />
   );
+
+  // listen to hot key events
 
   return (
     <div className={styles.root}>

@@ -6,6 +6,7 @@ import { CommandPayload, CommandParameters, changeCommand } from '../store/slice
 import CommandTypes from '../constants/commandTypes.json';
 
 import CommandParameter from './CommandParameter';
+import { hasOwnProperty } from './utils';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -18,10 +19,6 @@ const useStyles = createAppUseStyles(theme => ({
     marginBottom: theme.spacing(1),
   }
 }));
-
-const hasOwnProperty = <X extends {}>(obj: X, key: PropertyKey): key is keyof X => {
-  return obj.hasOwnProperty(key);
-}
 
 const CommandParametersComponent = () => {
 
