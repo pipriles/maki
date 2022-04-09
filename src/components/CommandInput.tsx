@@ -8,7 +8,7 @@ import { createAppUseStyles } from '../styles';
 const useStyles = createAppUseStyles((theme) => ({
   root: {
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
-    borderTop: ["1px", "solid", theme.palette.primary.main],
+    borderTop: ["1px", "solid", theme.lighten(theme.palette.background, 1)],
   },
   group: {
     display: "flex",

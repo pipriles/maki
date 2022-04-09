@@ -11,7 +11,7 @@ const useStyles = createAppUseStyles(theme => ({
   root: {
     padding: theme.spacing(2),
     flexBasis: 256,
-    borderLeft: [1, "solid", theme.palette.primary.main],
+    borderLeft: [1, "solid", theme.lighten(theme.palette.background, 1)],
     overflow: "hidden",
   },
   parameter: {
