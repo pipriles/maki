@@ -103,9 +103,31 @@ export const commandSlice = createSlice({
       state.ids.pop();
       state.ids.splice(action.payload, 0, command.id);
     },
+    createCommandCopy: (
+      state, 
+      action: PayloadAction<{ commandId?: Command['id'], index: number }>
+    ) => {
+      const { commandId, index } = action.payload; 
+      if (!commandId) return;
+
+      const command = state.entities[commandId];
+      if (!command) return;
+
+      const { id, ...payload } = command;
+      const copy = createNewCommand(payload)
+
+      commandsAdapter.addOne(state, copy);
+      state.ids.pop();
+      state.ids.splice(index+1, 0, copy.id);
+    },
   }
 });
 
-export const { addCommand, removeCommand, changeCommand } = commandSlice.actions;
+export const { 
+  addCommand, 
+  removeCommand, 
+  changeCommand, 
+  createCommandCopy 
+} = commandSlice.actions;
 
 export default commandSlice.reducer;

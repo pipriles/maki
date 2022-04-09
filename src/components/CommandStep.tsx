@@ -4,12 +4,13 @@ import { MdMoreVert } from 'react-icons/md';
 
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand, commandSelectors } from '../store/selectors';
-import { changeCurrentCommand } from '../store/slices/ui';
-import { Command, addCommand, removeCommand, changeCommand } from '../store/slices/command';
+import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
+import { Command, addCommand, removeCommand, changeCommand, createCommandCopy } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
+import { useContextMenu } from './utils';
 
 const useStyles = createAppUseStyles(theme => ({
   command: {
@@ -84,6 +85,7 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
 
   const commands = useAppSelector(commandSelectors.selectAll);
   const currentCommand = useAppSelector(getCurrentCommand);
+  const commandCopied = useAppSelector(state => state.ui.commandCopied);
   const dispatch = useAppDispatch();
 
   const [contextMenu, setContextMenu] = useContextMenu();
@@ -131,11 +133,12 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
   };
 
   const onCommandCopy = () => {
-
+    dispatch(copyCommand(command.id));
   };
 
   const onCommandPaste = () => {
-
+    const payload = { commandId: commandCopied, index };
+    dispatch(createCommandCopy(payload))
   };
 
   return (
@@ -159,41 +162,13 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
       <ContextMenu 
         open={contextMenu !== undefined} 
         position={contextMenu}>
-        <ContextMenuItem label={"Copy"} tooltip={"Ctrl + C"} />
-        <ContextMenuItem label={"Paste"} tooltip={"Ctrl + V"} />
+        <ContextMenuItem label={"Copy"} tooltip={"Ctrl + C"} onClick={onCommandCopy} />
+        <ContextMenuItem label={"Paste"} tooltip={"Ctrl + V"} onClick={onCommandPaste} />
         <ContextMenuItem label={"Delete"} tooltip={"Ctrl + Del"} onClick={onCommandDelete}/>
       </ContextMenu>
 
     </div>
   );
 }
-
-const useContextMenu = () => {
-
-  const [contextMenu, setContextMenu] = React.useState<{
-    left: number;
-    top: number;
-  } | undefined>(undefined);
-
-  const handleContextMenu = React.useCallback(() => {
-    if (contextMenu !== undefined) setContextMenu(undefined);
-  }, [contextMenu]);
-
-  const handleClick = React.useCallback(() => {
-    if (contextMenu !== undefined) setContextMenu(undefined);
-  }, [contextMenu]);
-
-  React.useEffect(() => {
-    document.addEventListener("click", handleClick);
-    document.addEventListener("contextmenu", handleContextMenu);
-
-    return () => {
-      document.removeEventListener("click", handleClick);
-      document.removeEventListener("contextmenu", handleContextMenu);
-    };
-  });
-
-  return [contextMenu, setContextMenu] as const;
-};
 
 export default CommandStep;

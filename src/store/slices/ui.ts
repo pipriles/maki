@@ -3,10 +3,12 @@ import { Command } from './command';
 
 export interface IUi {
   currentCommand?: Command['id'];
+  commandCopied?: Command['id'];
 }
 
 const initialState: IUi = {
   currentCommand: undefined,
+  commandCopied: undefined,
 };
 
 export const uiSlice = createSlice({
@@ -15,11 +17,14 @@ export const uiSlice = createSlice({
   reducers: {
     changeCurrentCommand: (state: IUi, action: PayloadAction<IUi['currentCommand']>) => {
       return { ...state, currentCommand: action.payload };
+    },
+    copyCommand: (state: IUi, action: PayloadAction<IUi['commandCopied']>) => {
+      return { ...state, commandCopied: action.payload };
     }
   }
 });
 
-export const { changeCurrentCommand } = uiSlice.actions;
+export const { changeCurrentCommand, copyCommand } = uiSlice.actions;
 
 export default uiSlice.reducer;
 
