@@ -117,13 +117,9 @@ export const commandSlice = createSlice({
       const copy = createNewCommand(payload)
 
       const p = index === undefined ? state.ids.indexOf(commandId) : index;
-      console.log(p);
 
       commandsAdapter.addOne(state, copy);
-
       state.ids.pop();
-
-      console.log('Position:', p);
       state.ids.splice(p+1, 0, copy.id);
     },
   }
