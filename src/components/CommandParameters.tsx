@@ -54,7 +54,10 @@ const CommandParametersComponent = () => {
       return null;
 
     return (
-      <div className={styles.parameter}>
+      <div 
+        className={styles.parameter}
+        key={propertyKey}
+      >
         <CommandParameter 
           key={propertyKey}
           parameterType={propertyKey} 

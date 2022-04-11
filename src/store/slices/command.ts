@@ -105,7 +105,7 @@ export const commandSlice = createSlice({
     },
     createCommandCopy: (
       state, 
-      action: PayloadAction<{ commandId?: Command['id'], index: number }>
+      action: PayloadAction<{ commandId?: Command['id'], index?: number }>
     ) => {
       const { commandId, index } = action.payload; 
       if (!commandId) return;
@@ -116,9 +116,15 @@ export const commandSlice = createSlice({
       const { id, ...payload } = command;
       const copy = createNewCommand(payload)
 
+      const p = index === undefined ? state.ids.indexOf(commandId) : index;
+      console.log(p);
+
       commandsAdapter.addOne(state, copy);
+
       state.ids.pop();
-      state.ids.splice(index+1, 0, copy.id);
+
+      console.log('Position:', p);
+      state.ids.splice(p+1, 0, copy.id);
     },
   }
 });
