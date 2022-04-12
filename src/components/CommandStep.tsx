@@ -111,7 +111,7 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
     rootClassName.push(styles.hidden);
 
   const onCommandClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
+    console.log(event);
     if (index >= commands.length) {
       batch(() => {
         dispatch(addCommand(command));
@@ -158,21 +158,17 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
     transition,
   };
 
-  console.log(listeners);
-
   return (
     <div 
       ref={setNodeRef} 
       style={style}
-      { ...attributes } 
-      { ...listeners }
       onContextMenu={onCommandContextMenu} 
-      onClick={onCommandClick}
-    >
-
+      onClick={onCommandClick}>
 
       <div className={rootClassName.join(" ")}>
-        <span className={styles.index}>{index}</span>
+        <span className={styles.index} { ...attributes } { ...listeners } >
+          {index}
+        </span>
         <input 
           className={styles.commandLabel} 
           value={command.commandType} 

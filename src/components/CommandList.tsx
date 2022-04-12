@@ -3,18 +3,13 @@ import { batch } from 'react-redux';
 import {
   DndContext, 
   closestCenter,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { SortableContext, verticalListSortingStrategy, } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis, } from '@dnd-kit/modifiers'
 
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
@@ -110,9 +105,11 @@ const CommandList = () => {
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
       >
         <SortableContext 
           items={commands}
+          strategy={verticalListSortingStrategy}
         >
           <div>{renderCommands}</div>
         </SortableContext>
