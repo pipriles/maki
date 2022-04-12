@@ -1,11 +1,31 @@
 import React from 'react';
 import { batch } from 'react-redux';
+import {
+  DndContext, 
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { commandFactory, createCommandCopy, removeCommand } from '../store/slices/command';
 import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
 import { commandSelectors, getCurrentCommand } from '../store/selectors';
+import { 
+  commandFactory, 
+  createCommandCopy, 
+  removeCommand, 
+  moveCommand 
+} from '../store/slices/command';
 
 import CommandStep from './CommandStep';
 
@@ -21,16 +41,13 @@ const CommandList = () => {
 
   const styles = useStyles();
   const dispatch = useAppDispatch();
+  const commandIds = useAppSelector(commandSelectors.selectIds);
   const commands = useAppSelector(commandSelectors.selectAll)
   const currentCommand = useAppSelector(getCurrentCommand)
   const commandCopied = useAppSelector(state => state.ui.commandCopied);
 
   const fakeCommand = commandFactory();
   const commandSteps = [ ...commands, fakeCommand ];
-
-  const renderCommands = commandSteps.map(
-    (command, index) => <CommandStep command={command} index={index} key={command.id} />
-  );
 
   const handleCopy = React.useCallback(() => {
     dispatch(copyCommand(currentCommand?.id));
@@ -70,9 +87,36 @@ const CommandList = () => {
     }
   }, [handleKeyDown]);
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const {active, over} = event;
+    
+    if (active && over && active.id !== over.id) {
+      const oldIndex = commandIds.indexOf(active.id);
+      const newIndex = commandIds.indexOf(over.id);
+      const payload = { newIndex, oldIndex };
+      dispatch(moveCommand(payload));
+    };
+  }
+
+  const renderCommands = commandSteps.map(
+    (command, index) => <CommandStep command={command} index={index} key={command.id} />
+  );
+
+  const sensors = useSensors(useSensor(PointerSensor));
+
   return (
     <div className={styles.root}>
-      <div>{renderCommands}</div>
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext 
+          items={commands}
+        >
+          <div>{renderCommands}</div>
+        </SortableContext>
+      </DndContext>
     </div>
   )
 };

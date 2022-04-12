@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
+import { arrayMove } from '@dnd-kit/sortable';
 import COMMANDS from '../defaults/commands.json';
 
 interface LocatorParameter {
@@ -122,6 +123,10 @@ export const commandSlice = createSlice({
       state.ids.pop();
       state.ids.splice(p+1, 0, copy.id);
     },
+    moveCommand: (state, action: PayloadAction<{ oldIndex: number, newIndex: number }>) => {
+      const { oldIndex, newIndex } = action.payload;
+      state.ids = arrayMove(state.ids, oldIndex, newIndex); 
+    },
   }
 });
 
@@ -129,7 +134,8 @@ export const {
   addCommand, 
   removeCommand, 
   changeCommand, 
-  createCommandCopy 
+  createCommandCopy,
+  moveCommand,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

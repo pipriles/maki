@@ -1,6 +1,8 @@
 import React from 'react';
 import { batch } from 'react-redux';
 import { MdMoreVert } from 'react-icons/md';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand, commandSelectors } from '../store/selectors';
@@ -91,6 +93,15 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
   const [contextMenu, setContextMenu] = useContextMenu();
 
   const styles = useStyles();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({id: command.id});
+
   const rootClassName = [styles.command] 
 
   if (command.id === currentCommand?.id)
@@ -99,7 +110,8 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
   if (index >= commands.length)
     rootClassName.push(styles.hidden);
 
-  const onCommandClick = () => {
+  const onCommandClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
     if (index >= commands.length) {
       batch(() => {
         dispatch(addCommand(command));
@@ -141,10 +153,25 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
     dispatch(createCommandCopy(payload))
   };
 
-  return (
-    <div onContextMenu={onCommandContextMenu}>
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
-      <div className={rootClassName.join(" ")} onClick={onCommandClick}>
+  console.log(listeners);
+
+  return (
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      { ...attributes } 
+      { ...listeners }
+      onContextMenu={onCommandContextMenu} 
+      onClick={onCommandClick}
+    >
+
+
+      <div className={rootClassName.join(" ")}>
         <span className={styles.index}>{index}</span>
         <input 
           className={styles.commandLabel} 
