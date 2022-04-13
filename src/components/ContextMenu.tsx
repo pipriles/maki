@@ -1,5 +1,6 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
+import { useDimensions } from './utils';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -20,8 +21,8 @@ const useStyles = createAppUseStyles(theme => ({
 }));
 
 interface ContextMenuPosition {
-  top: number;
-  left: number;
+  top?: number;
+  left?: number;
 }
 
 interface ContextMenuProps {
@@ -42,7 +43,7 @@ const ContextMenu = ({ children, className, open, position }: ContextMenuProps) 
   if (open)
     rootClassName.push(styles.show);
 
-  if (position !== undefined && element && element.current) {
+  if (position && position.left && position.top && element && element.current) {
     elementPosition.left = `min(${position.left}px, calc(100% - ${width}px))`;
     elementPosition.top = `min(${position.top}px, calc(100% - ${height}px))`;
   }
@@ -54,30 +55,5 @@ const ContextMenu = ({ children, className, open, position }: ContextMenuProps) 
   );
 };
 
-const useDimensions = (ref: React.RefObject<HTMLElement>) => {
-
-  const [width, setWidth] = React.useState(0);
-  const [height, setHeight] = React.useState(0);
-
-  const computeDimensions = () => {
-    if (ref && ref.current) {
-      setWidth(ref.current.clientWidth);
-      setHeight(ref.current.clientWidth);
-    }
-  };
-
-  React.useEffect(() => {
-    computeDimensions();
-  }, [ref]);
-
-  React.useEffect(() => {
-    window.addEventListener("resize", computeDimensions);
-    return () => {
-      window.removeEventListener("resize", computeDimensions);
-    };
-  }, []);
-
-  return [width, height] as const;
-};
 
 export default ContextMenu;
