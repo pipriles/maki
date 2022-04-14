@@ -1,18 +1,38 @@
 import React from 'react';
 import { batch } from 'react-redux';
+import {
+  DndContext, 
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, } from '@dnd-kit/sortable';
+import { restrictToVerticalAxis, } from '@dnd-kit/modifiers'
 
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { commandFactory, createCommandCopy, removeCommand } from '../store/slices/command';
 import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
 import { commandSelectors, getCurrentCommand } from '../store/selectors';
+import { 
+  commandFactory, 
+  createCommandCopy, 
+  removeCommand, 
+  moveCommand 
+} from '../store/slices/command';
 
+import ContextMenu from './ContextMenu';
+import ContextMenuItem from './ContextMenuItem';
 import CommandStep from './CommandStep';
+
+import { useContextMenu } from './utils';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
     borderTop: ["1px", "solid", theme.lighten(theme.palette.background, 0.5)],
     flexGrow: 1,
+    flexBasis: 100,
     overflow: "auto",
   },
 }));
@@ -21,16 +41,13 @@ const CommandList = () => {
 
   const styles = useStyles();
   const dispatch = useAppDispatch();
+  const commandIds = useAppSelector(commandSelectors.selectIds);
   const commands = useAppSelector(commandSelectors.selectAll)
   const currentCommand = useAppSelector(getCurrentCommand)
   const commandCopied = useAppSelector(state => state.ui.commandCopied);
 
   const fakeCommand = commandFactory();
   const commandSteps = [ ...commands, fakeCommand ];
-
-  const renderCommands = commandSteps.map(
-    (command, index) => <CommandStep command={command} index={index} key={command.id} />
-  );
 
   const handleCopy = React.useCallback(() => {
     dispatch(copyCommand(currentCommand?.id));
@@ -70,9 +87,74 @@ const CommandList = () => {
     }
   }, [handleKeyDown]);
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const {active, over} = event;
+    
+    if (active && over && active.id !== over.id) {
+      const oldIndex = commandIds.indexOf(active.id);
+      const newIndex = commandIds.indexOf(over.id);
+      const payload = { newIndex, oldIndex };
+      dispatch(moveCommand(payload));
+    };
+  }
+
+  const renderCommands = commandSteps.map(
+    (command, index) => <CommandStep command={command} index={index} key={command.id} />
+  );
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5
+      }
+    })
+  );
+
+  const contextMenu = useContextMenu();
+
+  const onCommandDelete = () => {
+    if (contextMenu?.command)
+      dispatch(removeCommand(contextMenu.command));
+  };
+
+  const onCommandCopy = () => {
+    if (contextMenu?.command)
+      dispatch(copyCommand(contextMenu.command));
+  };
+
+  const onCommandPaste = () => {
+    if (contextMenu?.command) {
+      const index = commandIds.indexOf(contextMenu.command);
+      const payload = { commandId: commandCopied, index };
+      dispatch(createCommandCopy(payload))
+    }
+  };
+
   return (
     <div className={styles.root}>
-      <div>{renderCommands}</div>
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToVerticalAxis]}
+      >
+        <SortableContext 
+          items={commands}
+          strategy={verticalListSortingStrategy}
+        >
+          <div>
+            {renderCommands}
+          </div>
+        </SortableContext>
+      </DndContext>
+
+      <ContextMenu 
+        open={contextMenu?.command !== undefined} 
+        position={contextMenu}>
+        <ContextMenuItem label={"Copy"} tooltip={"Ctrl + C"} onClick={onCommandCopy} />
+        <ContextMenuItem label={"Paste"} tooltip={"Ctrl + V"} onClick={onCommandPaste} />
+        <ContextMenuItem label={"Delete"} tooltip={"Del"} onClick={onCommandDelete}/>
+      </ContextMenu>
     </div>
   )
 };

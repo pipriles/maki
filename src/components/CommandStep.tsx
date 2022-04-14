@@ -1,16 +1,14 @@
 import React from 'react';
 import { batch } from 'react-redux';
 import { MdMoreVert } from 'react-icons/md';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand, commandSelectors } from '../store/selectors';
-import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
-import { Command, addCommand, removeCommand, changeCommand, createCommandCopy } from '../store/slices/command';
+import { changeCurrentCommand, setContextMenu } from '../store/slices/ui';
+import { Command, addCommand, changeCommand, } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
-
-import ContextMenu from './ContextMenu';
-import ContextMenuItem from './ContextMenuItem';
-import { useContextMenu } from './utils';
 
 const useStyles = createAppUseStyles(theme => ({
   command: {
@@ -85,12 +83,18 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
 
   const commands = useAppSelector(commandSelectors.selectAll);
   const currentCommand = useAppSelector(getCurrentCommand);
-  const commandCopied = useAppSelector(state => state.ui.commandCopied);
   const dispatch = useAppDispatch();
 
-  const [contextMenu, setContextMenu] = useContextMenu();
-
   const styles = useStyles();
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({id: command.id});
+
   const rootClassName = [styles.command] 
 
   if (command.id === currentCommand?.id)
@@ -100,6 +104,11 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
     rootClassName.push(styles.hidden);
 
   const onCommandClick = () => {
+
+    if ( document.activeElement instanceof HTMLInputElement 
+      && currentCommand?.id !== command.id )
+      document.activeElement.blur();
+
     if (index >= commands.length) {
       batch(() => {
         dispatch(addCommand(command));
@@ -117,39 +126,43 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
 
   const onCommandContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
-    setContextMenu(
-      (contextMenu === undefined) ? ({ left: event.clientX, top: event.clientY }) : undefined
-    );
+    dispatch(setContextMenu({ command: command.id, left: event.clientX, top: event.clientY }));
   };
 
-  const onMoreClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setContextMenu(
-      (contextMenu === undefined) ? ({ left: event.clientX, top: event.clientY }) : undefined
-    );
+  const onMoreClick = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    dispatch(setContextMenu({ command: command.id, left: event.clientX, top: event.clientY }));
   };
 
-  const onCommandDelete = () => {
-    dispatch(removeCommand(command.id));
+  const onInputMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
+    if (currentCommand?.id !== command.id)
+      event.preventDefault();
   };
 
-  const onCommandCopy = () => {
-    dispatch(copyCommand(command.id));
-  };
-
-  const onCommandPaste = () => {
-    const payload = { commandId: commandCopied, index };
-    dispatch(createCommandCopy(payload))
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
   };
 
   return (
-    <div onContextMenu={onCommandContextMenu}>
+    <div 
+      ref={setNodeRef} 
+      style={style}
+      { ...attributes } 
+      { ...listeners }>
 
-      <div className={rootClassName.join(" ")} onClick={onCommandClick}>
-        <span className={styles.index}>{index}</span>
+      <div 
+        className={rootClassName.join(" ")} 
+        onContextMenu={onCommandContextMenu} 
+        onClick={onCommandClick}>
+        <span className={styles.index}>
+          {index}
+        </span>
         <input 
           className={styles.commandLabel} 
           value={command.commandType} 
           onChange={onCommandTypeChange}
+          onMouseDown={onInputMouseDown}
         />
         <div className={styles.icons}>
           <button onClick={onMoreClick}>
@@ -158,14 +171,6 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
         </div>
 
       </div>
-
-      <ContextMenu 
-        open={contextMenu !== undefined} 
-        position={contextMenu}>
-        <ContextMenuItem label={"Copy"} tooltip={"Ctrl + C"} onClick={onCommandCopy} />
-        <ContextMenuItem label={"Paste"} tooltip={"Ctrl + V"} onClick={onCommandPaste} />
-        <ContextMenuItem label={"Delete"} tooltip={"Ctrl + Del"} onClick={onCommandDelete}/>
-      </ContextMenu>
 
     </div>
   );
