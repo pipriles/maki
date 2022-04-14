@@ -102,7 +102,13 @@ const CommandList = () => {
     (command, index) => <CommandStep command={command} index={index} key={command.id} />
   );
 
-  const sensors = useSensors(useSensor(PointerSensor));
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5
+      }
+    })
+  );
 
   const contextMenu = useContextMenu();
 

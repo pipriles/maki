@@ -147,13 +147,15 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
   return (
     <div 
       ref={setNodeRef} 
-      style={style}>
+      style={style}
+      { ...attributes } 
+      { ...listeners }>
 
       <div 
         className={rootClassName.join(" ")} 
         onContextMenu={onCommandContextMenu} 
         onClick={onCommandClick}>
-        <span className={styles.index} { ...attributes } { ...listeners } >
+        <span className={styles.index}>
           {index}
         </span>
         <input 
