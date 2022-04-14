@@ -1,6 +1,9 @@
 import React from 'react';
-import { createAppUseStyles } from '../styles';
 import { BiPlay, BiPause, BiStop } from 'react-icons/bi';
+import { useAppSelector } from '../store/hooks';
+import { commandSelectors } from '../store/selectors';
+import { createAppUseStyles } from '../styles';
+import { runCommands } from '../proxy'
 
 import CurrentTab from './CurrentTab';
 
@@ -31,12 +34,18 @@ const useStyles = createAppUseStyles(theme => ({
 const Toolbar = () => {
 
   const styles = useStyles();
+  const commands = useAppSelector(commandSelectors.selectAll);
+
+  const onRecipePlay = () => {
+    console.log('Start scraping!');
+    runCommands(commands);
+  };
 
   return (
     <div className={styles.root}>
       <CurrentTab />
       <div className={styles.playback}>
-        <button className={styles.button}>
+        <button className={styles.button} onClick={onRecipePlay}>
           <BiPlay />
         </button>
         <button className={styles.button}>
