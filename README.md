@@ -12,9 +12,11 @@ Either way, I didn't want to get my project bloated, so I thought it might be be
 
 ## Installation
 
-You should have `NODE` and `yarn` installed. Once you have those installed just install the dependencies doing `yarn install`.
+You should have `NODE` and `yarn` installed.
 
-To build the project run `yarn run build`
+Once you have those installed just install the dependencies doing `yarn install`.
+
+To build the project run `yarn run build`.
 
 To install the extension go to your Chrome Extensions tab and click __"Load unpacked"__ and select the `dist` folder that was generated on the build step.
 
