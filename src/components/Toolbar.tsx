@@ -1,7 +1,10 @@
 import React from 'react';
+import { batch } from 'react-redux';
 import { BiPlay, BiPause, BiStop } from 'react-icons/bi';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { commandSelectors } from '../store/selectors';
+import { changeRunningState } from '../store/slices/app';
+import { resetAllCommandStatus } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 import { runCommands } from '../proxy'
 
@@ -34,11 +37,24 @@ const useStyles = createAppUseStyles(theme => ({
 const Toolbar = () => {
 
   const styles = useStyles();
+  const dispatch = useAppDispatch();
   const commands = useAppSelector(commandSelectors.selectAll);
 
   const onRecipePlay = () => {
     console.log('Start scraping!');
+    dispatch(changeRunningState(true));
     runCommands(commands);
+  };
+
+  const onRecipePause = () => {
+    dispatch(changeRunningState(false));
+  }
+
+  const onRecipeStop = () => {
+    batch(() => {
+      dispatch(resetAllCommandStatus());
+      dispatch(changeRunningState(false));
+    });
   };
 
   return (
@@ -48,10 +64,10 @@ const Toolbar = () => {
         <button className={styles.button} onClick={onRecipePlay}>
           <BiPlay />
         </button>
-        <button className={styles.button}>
+        <button className={styles.button} onClick={onRecipePause}>
           <BiPause />
         </button>
-        <button className={styles.button}>
+        <button className={styles.button} onClick={onRecipeStop}>
           <BiStop />
         </button>
       </div>

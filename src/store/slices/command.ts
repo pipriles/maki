@@ -130,6 +130,13 @@ export const commandSlice = createSlice({
       const { oldIndex, newIndex } = action.payload;
       state.ids = arrayMove(state.ids, oldIndex, newIndex); 
     },
+    resetAllCommandStatus: (state) => {
+      state.ids.forEach(id => {
+        const command = state.entities[id];
+        if (command !== undefined)
+          command.commandStatus = undefined
+      });
+    },
   }
 });
 
@@ -139,6 +146,7 @@ export const {
   changeCommand, 
   createCommandCopy,
   moveCommand,
+  resetAllCommandStatus,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

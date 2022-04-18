@@ -33,6 +33,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [ ] Show errors on UI
 - [ ] Improve select element on document
 - [ ] Show sample of data extracted below selector parameters
+- [ ] Make commands required to run and allow a command to run isolated
 - [ ] Add play, pause and stop functionality
 - [ ] Add recipes to Redux state
 - [ ] Create default test recipe

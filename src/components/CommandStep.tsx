@@ -7,7 +7,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand, commandSelectors } from '../store/selectors';
 import { changeCurrentCommand, setContextMenu } from '../store/slices/ui';
-import { Command, addCommand, changeCommand, } from '../store/slices/command';
+import { Command, addCommand, changeCommand } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 
 const useStyles = createAppUseStyles(theme => ({
@@ -46,10 +46,18 @@ const useStyles = createAppUseStyles(theme => ({
   },
   current: {
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
-    borderLeft: ["2px", "solid", theme.palette.primary.main],
     '& $icons': {
       display: "flex",
     },
+  },
+  running: {
+    borderLeft: ["2px", "solid", theme.palette.primary.main],
+  },
+  done: {
+    borderLeft: ["2px", "solid", "#8bfd8d"],
+  },
+  error: {
+    borderLeft: ["2px", "solid", "#fd8b8b"],
   },
   icons: {
     display: "none",
@@ -102,6 +110,11 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
 
   if (index >= commands.length)
     rootClassName.push(styles.hidden);
+
+  if (command.commandStatus)
+    rootClassName.push(styles[command.commandStatus]);
+
+  console.log(rootClassName);
 
   const onCommandClick = () => {
 

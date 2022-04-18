@@ -77,20 +77,30 @@ export const runCommands = async (commands: Command[]) => {
 
   for (const cmd of commands) {
 
+    const isRunning = select(state => state.app.running);
+    if (!isRunning) return;
+
     updateCommandStatus(cmd.id, 'running');
     console.log(cmd);
 
-    await waitPageLoad();
-
     // Wait until it is ready
-    const resp = await sendCommand(cmd);
-    console.log(resp);
+    try {
+      await waitPageLoad();
+    } catch(e) {
+      updateCommandStatus(cmd.id, 'error');
+      return;
+    }
+      
+    try {
+      /* Store command results on an intermediate area */ 
+      const resp = await sendCommand(cmd);
+      updateCommandStatus(cmd.id, 'done')
+      updateCommandResult(cmd.id, resp.payload)
+    } catch(e) {
+      updateCommandStatus(cmd.id, 'error')
+      return;
+    }
 
-    /* Store command results on an intermediate area */ 
-    const commandStatus = resp.type === 'SUCCESS' ? 'done' : 'error';
-
-    updateCommandStatus(cmd.id, commandStatus)
-    updateCommandResult(cmd.id, resp.payload)
   }
 
 };

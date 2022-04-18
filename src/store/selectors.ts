@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit';
 import { commandsAdapter } from './slices/command';
 import { RootState } from './';
 
-
 export const selectCommands = (state: RootState) => state.commands;
 export const selectUi = (state: RootState) => state.ui;
 export const getActiveTab = (state: RootState) => state.app.activeTab;
