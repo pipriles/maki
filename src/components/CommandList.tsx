@@ -77,7 +77,6 @@ const CommandList = () => {
     if (event.target instanceof HTMLInputElement)
       return;
 
-    console.log('Keydown', event.target);
     if (event.ctrlKey && event.key.toLowerCase() === 'c') handleCopy();
     else if (event.ctrlKey && event.key.toLowerCase() === 'v') handlePaste();
     else if (event.key === "Delete") handleDelete();

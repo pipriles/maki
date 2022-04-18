@@ -1,8 +1,8 @@
-import { select } from '../store';
+import { store, select } from '../store';
 import { getActiveTab } from '../store/selectors';
-import { Command } from '../store/slices/command';
+import { Command, changeCommand } from '../store/slices/command';
 import browser from 'webextension-polyfill';
-import { Message, Executor, makeResponse, makeErrorResponse } from '../common/utils';
+import { Message, Executor, Response, makeResponse, makeErrorResponse } from '../common/utils';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
@@ -16,11 +16,11 @@ const openUrl: Executor = async ({ parameters }: Command) => {
 
 /* Commands that need to use background script browser api */
 
-const commandExecutorMap: { [k: string]: Executor } = {
+const commandExecutorMap: Record<string, Executor> = {
   'OPEN': openUrl
 };
 
-export const sendCommand = async (command: Command) => {
+export const sendCommand = async (command: Command): Promise<Response<unknown>> => {
 
   const action = commandExecutorMap[command.commandType];
 
@@ -63,9 +63,21 @@ export const waitPageLoad = () => {
   });
 };
 
+const updateCommandStatus = (id: Command['id'], commandStatus: Command['commandStatus']) => {
+  const action = changeCommand({ id, commandStatus });
+  return store.dispatch(action);
+};
+
+const updateCommandResult = (id: Command['id'], commandResult: Command['commandResult']) => {
+  const action = changeCommand({ id, commandResult });
+  return store.dispatch(action);
+};
+
 export const runCommands = async (commands: Command[]) => {
 
   for (const cmd of commands) {
+
+    updateCommandStatus(cmd.id, 'running');
     console.log(cmd);
 
     await waitPageLoad();
@@ -75,6 +87,10 @@ export const runCommands = async (commands: Command[]) => {
     console.log(resp);
 
     /* Store command results on an intermediate area */ 
+    const commandStatus = resp.type === 'SUCCESS' ? 'done' : 'error';
+
+    updateCommandStatus(cmd.id, commandStatus)
+    updateCommandResult(cmd.id, resp.payload)
   }
 
 };

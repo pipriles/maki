@@ -12,7 +12,7 @@ export interface Message {
 }
 
 export interface Response<T> {
-  type: string;
+  type: 'SUCCESS' | 'ERROR';
   payload: T;
 }
 

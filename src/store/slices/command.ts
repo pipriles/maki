@@ -31,6 +31,9 @@ export interface Command {
   commandType: string;
   description: string;
   parameters: CommandParameters;
+  commandStatus?: "running" | "done" | "error";
+  commandResult?: unknown;
+  field?: string;
 }
 
 export interface CommandPayload extends Omit<Partial<Command>, 'parameters'> { 

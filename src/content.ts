@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { finder } from '@medv/finder';
 import { Command } from './store/slices/command';
-import { Locator, Message, makeResponse, makeErrorResponse } from './common/utils';
+import { Locator, Executor, Message, makeResponse, makeErrorResponse } from './common/utils';
 
 console.log('Listening to commands...');
 
@@ -170,7 +170,7 @@ const responseFromPromise = async <T>(promise: Promise<T>) => {
   }
 }
 
-const commandExecutorMap = {
+const commandExecutorMap: Record<string, Executor> = {
   'EXTRACT_TEXT':                 extractText,
   'EXTRACT_ATTRIBUTE':            extractAttribute,
   'EXTRACT_URL':                  extractUrl,
@@ -187,7 +187,7 @@ const commandExecutorMap = {
 const executeCommand = async (command: Command) => {
 
   console.log(command);
-  const action = commandExecutorMap[command.commandType as keyof typeof commandExecutorMap];
+  const action = commandExecutorMap[command.commandType];
 
   if ( action === undefined ) {
     const payload = { 'message': 'Invalid command type' }
