@@ -20,3 +20,9 @@ export type Executor = (command: Command) => Promise<unknown>;
 
 export const makeResponse      = <T>(payload: T): Response<T> => ({ type: 'SUCCESS', payload });
 export const makeErrorResponse = <T>(payload: T): Response<T> => ({ type: 'ERROR'  , payload });
+
+export const delay = (milliseconds: number) => {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => resolve(), milliseconds);
+  });
+}

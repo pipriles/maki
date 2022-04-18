@@ -1,8 +1,16 @@
 import { store, select } from '../store';
 import { getActiveTab } from '../store/selectors';
+import { changeRunningState } from '../store/slices/app';
 import { Command, changeCommand } from '../store/slices/command';
 import browser from 'webextension-polyfill';
-import { Message, Executor, Response, makeResponse, makeErrorResponse } from '../common/utils';
+import { 
+  Message, 
+  Executor, 
+  Response, 
+  makeResponse, 
+  makeErrorResponse, 
+  delay
+} from '../common/utils';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
@@ -50,7 +58,6 @@ export const waitPageLoad = () => {
       }
 
       const updated = await browser.tabs.get(activeTab.id);
-      console.log(updated.status);
 
       if (updated.status === 'complete') {
         resolve(updated);
@@ -75,13 +82,20 @@ const updateCommandResult = (id: Command['id'], commandResult: Command['commandR
 
 export const runCommands = async (commands: Command[]) => {
 
+  const isRunning = select(state => state.app.running);
+  if (isRunning) return;
+
+  store.dispatch(changeRunningState(true));
+
   for (const cmd of commands) {
 
     const isRunning = select(state => state.app.running);
     if (!isRunning) return;
 
+    if (cmd.commandStatus === 'done' || cmd.commandStatus === 'error')
+      continue;
+
     updateCommandStatus(cmd.id, 'running');
-    console.log(cmd);
 
     // Wait until it is ready
     try {
@@ -101,8 +115,9 @@ export const runCommands = async (commands: Command[]) => {
       return;
     }
 
+    /* Execution speed */
+    await delay(500)
   }
-
 };
 
 export const locateElement = async () => {

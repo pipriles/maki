@@ -114,8 +114,6 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
   if (command.commandStatus)
     rootClassName.push(styles[command.commandStatus]);
 
-  console.log(rootClassName);
-
   const onCommandClick = () => {
 
     if ( document.activeElement instanceof HTMLInputElement 

@@ -42,7 +42,6 @@ const Toolbar = () => {
 
   const onRecipePlay = () => {
     console.log('Start scraping!');
-    dispatch(changeRunningState(true));
     runCommands(commands);
   };
 
@@ -52,8 +51,8 @@ const Toolbar = () => {
 
   const onRecipeStop = () => {
     batch(() => {
-      dispatch(resetAllCommandStatus());
       dispatch(changeRunningState(false));
+      dispatch(resetAllCommandStatus());
     });
   };
 
