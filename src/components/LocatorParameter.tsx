@@ -3,6 +3,8 @@ import { createAppUseStyles } from '../styles';
 import { ICommandParametersProps } from './utils';
 import { AiOutlineSelect } from 'react-icons/ai';
 
+import { locateElement } from '../proxy';
+
 const useStyles = createAppUseStyles(theme => ({
   root: {
     display: "flex",
@@ -36,10 +38,10 @@ const LocatorParameter = ({ parameter, onChange }: LocatorParameterProps) => {
   };
 
   const handleLocator = async () => {
-    // let response = await locateElement();
-    // const query = response.payload
-    // const payload = { query }
-    // onChange(payload);
+    const response = await locateElement();
+    const query = response?.payload
+    const payload = { query }
+    onChange(payload);
   };
 
   return (

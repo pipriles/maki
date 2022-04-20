@@ -92,17 +92,17 @@ export const runCommands = async (commands: Command[]) => {
     const isRunning = select(state => state.app.running);
     if (!isRunning) return;
 
-    if (cmd.commandStatus === 'done' || cmd.commandStatus === 'error')
+    if (cmd.commandStatus === 'done')
       continue;
 
     updateCommandStatus(cmd.id, 'running');
 
-    // Wait until it is ready
     try {
+      // Wait until it is ready
       await waitPageLoad();
     } catch(e) {
       updateCommandStatus(cmd.id, 'error');
-      return;
+      break;
     }
       
     try {
@@ -112,12 +112,14 @@ export const runCommands = async (commands: Command[]) => {
       updateCommandResult(cmd.id, resp.payload)
     } catch(e) {
       updateCommandStatus(cmd.id, 'error')
-      return;
+      break;
     }
 
     /* Execution speed */
     await delay(500)
   }
+
+  store.dispatch(changeRunningState(false));
 };
 
 export const locateElement = async () => {

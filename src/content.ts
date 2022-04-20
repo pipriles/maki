@@ -215,8 +215,10 @@ const removeHightlightElement = (event: Event) => {
 };
 
 const preventActions = (event: Event) => {
+  console.log('PREVENTED!')
   event.stopPropagation();
   event.preventDefault();
+  document.removeEventListener('click', preventActions);
 };
 
 const findElementSelector = () => {
