@@ -33,7 +33,7 @@ export interface Command {
   parameters: CommandParameters;
   commandStatus?: "running" | "done" | "error";
   commandResult?: unknown;
-  field?: string;
+  field: string;
 }
 
 export interface CommandPayload extends Omit<Partial<Command>, 'parameters'> { 
@@ -71,6 +71,7 @@ export const commandFactory = (): Command => ({
   commandType: "",
   description: "",
   parameters: { ...defaultParameters },
+  field: "",
 });
 
 const createNewCommand = (payload?: CommandPayload): Command => {

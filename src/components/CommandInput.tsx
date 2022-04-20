@@ -56,7 +56,7 @@ const CommandInput = () => {
         <span className={styles.label}>Command</span>
         <input 
           className={styles.input} 
-          value={command.commandType} 
+          value={command.commandType}
           onChange={onCommandTypeChange}
         />
       </div>
