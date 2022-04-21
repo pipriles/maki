@@ -3,7 +3,7 @@ import { createAppUseStyles } from '../styles';
 
 import Toolbar from './Toolbar';
 import CommandList from './CommandList';
-import CommandInput from './CommandInput';
+import CommandPanel from './CommandPanel';
 import CommandParametersComponent from './CommandParameters';
 
 const useStyles = createAppUseStyles(theme => ({
@@ -33,7 +33,7 @@ const AutomationMenu = () => {
       <div className={styles.body}>
         <div className={styles.inner}>
           <CommandList />
-          <CommandInput />
+          <CommandPanel />
         </div>
         <CommandParametersComponent />
       </div>

@@ -27,10 +27,11 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Improve webpack config file
 - [x] Migrate project to TypeScript
 - [x] Allow to drag and drop commands
-- [ ] Add property on command to set the name of the data being extracted
-- [ ] Add reducers to change command status
-- [ ] Add visual clues to understand the extraction is running
+- [x] Add property on command to set the name of the data being extracted
+- [x] Add reducers to change command status
+- [x] Add visual clues to understand the extraction is running
 - [ ] Show errors on UI
+- [ ] Add command autocomplete
 - [ ] Improve select element on document
 - [ ] Implement ability detect a selector shared in multiple elements
 - [ ] Show sample of data extracted below selector parameters
