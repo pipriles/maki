@@ -7,6 +7,7 @@ import CommandInput from './CommandInput';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
+    borderTop: ["1px", "solid", theme.palette.background],
   },
   tabs: {
     display: "flex",
@@ -14,7 +15,7 @@ const useStyles = createAppUseStyles(theme => ({
   },
   tab: {
     fontSize: theme.sizes(1.75),
-    padding: [theme.spacing(1)],
+    padding: [theme.spacing(0.75), theme.spacing(1)],
     cursor: "pointer",
     '&:hover': {
       backgroundColor: theme.lighten(theme.palette.background, 0.25),
@@ -59,6 +60,27 @@ const PanelTabs = ({ value, onChange, children }: PanelTabsProps) => {
   );
 };
 
+interface PanelBodyProps {
+  value: number;
+  children: React.ReactNode;
+}
+
+const PanelBody = ({ value, children }: PanelBodyProps) => {
+
+  const styles = useStyles();
+  let body = null;
+
+  React.Children.forEach(children, (child, index) => {
+    if (index === value) body = child;
+  });
+
+  return (
+    <div className={styles.body}>
+      {body}
+    </div>
+  )
+};
+
 const CommandPanel = () => {
 
   const styles = useStyles();
@@ -78,9 +100,9 @@ const CommandPanel = () => {
         <span>Command</span>
         <span>Console</span>
       </PanelTabs>
-      <div className={styles.body}>
+      <PanelBody value={currentTab}>
         <CommandInput command={command} />
-      </div>
+      </PanelBody>
     </div>
   )
 };
