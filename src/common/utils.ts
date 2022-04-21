@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { Command } from '../store/slices/command';
 
 export interface Locator {
@@ -6,10 +7,21 @@ export interface Locator {
   elementIndex?: number | null;
 };
 
-export interface Message {
-  type: string;
-  payload?: Command;
+export interface CommandMessage {
+  type: 'COMMAND';
+  payload: Command;
 }
+
+export interface TabMessage {
+  type: 'TAB';
+  payload: browser.Tabs.Tab;
+}
+
+export interface LocatorMessage {
+  type: 'LOCATOR';
+}
+
+export type Message = CommandMessage | TabMessage | LocatorMessage;
 
 export interface Response<T> {
   type: 'SUCCESS' | 'ERROR';

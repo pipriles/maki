@@ -133,9 +133,3 @@ const sendMessageActiveTab = async (message: Message) => {
   return await browser.tabs.sendMessage(activeTab.id, message);
 }
 
-browser.runtime.onMessage.addListener(
-  (request, sender) => {
-    console.log('Message received!', request, sender);
-  }
-);
-
