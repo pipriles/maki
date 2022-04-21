@@ -45,14 +45,27 @@ const CommandInput = () => {
     dispatch(changeCommand(payload))
   };
 
+  const onCommandFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const payload = { id: command.id, field: event.target.value }
+    dispatch(changeCommand(payload))
+  };
+
   return (
     <div className={styles.root}>
       <div className={styles.group}>
         <span className={styles.label}>Command</span>
         <input 
           className={styles.input} 
-          value={command.commandType} 
+          value={command.commandType}
           onChange={onCommandTypeChange}
+        />
+      </div>
+      <div className={styles.group}>
+        <span className={styles.label}>Field*</span>
+        <input 
+          className={styles.input} 
+          value={command.field} 
+          onChange={onCommandFieldChange}
         />
       </div>
       <div className={styles.group}>

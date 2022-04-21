@@ -1,8 +1,16 @@
-import { select } from '../store';
+import { store, select } from '../store';
 import { getActiveTab } from '../store/selectors';
-import { Command } from '../store/slices/command';
+import { changeRunningState } from '../store/slices/app';
+import { Command, changeCommand } from '../store/slices/command';
 import browser from 'webextension-polyfill';
-import { Message, Executor, makeResponse, makeErrorResponse } from '../common/utils';
+import { 
+  Message, 
+  Executor, 
+  Response, 
+  makeResponse, 
+  makeErrorResponse, 
+  delay
+} from '../common/utils';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
@@ -16,11 +24,11 @@ const openUrl: Executor = async ({ parameters }: Command) => {
 
 /* Commands that need to use background script browser api */
 
-const commandExecutorMap: { [k: string]: Executor } = {
+const commandExecutorMap: Record<string, Executor> = {
   'OPEN': openUrl
 };
 
-export const sendCommand = async (command: Command) => {
+export const sendCommand = async (command: Command): Promise<Response<unknown>> => {
 
   const action = commandExecutorMap[command.commandType];
 
@@ -50,7 +58,6 @@ export const waitPageLoad = () => {
       }
 
       const updated = await browser.tabs.get(activeTab.id);
-      console.log(updated.status);
 
       if (updated.status === 'complete') {
         resolve(updated);
@@ -63,20 +70,56 @@ export const waitPageLoad = () => {
   });
 };
 
+const updateCommandStatus = (id: Command['id'], commandStatus: Command['commandStatus']) => {
+  const action = changeCommand({ id, commandStatus });
+  return store.dispatch(action);
+};
+
+const updateCommandResult = (id: Command['id'], commandResult: Command['commandResult']) => {
+  const action = changeCommand({ id, commandResult });
+  return store.dispatch(action);
+};
+
 export const runCommands = async (commands: Command[]) => {
 
+  const isRunning = select(state => state.app.running);
+  if (isRunning) return;
+
+  store.dispatch(changeRunningState(true));
+
   for (const cmd of commands) {
-    console.log(cmd);
 
-    await waitPageLoad();
+    const isRunning = select(state => state.app.running);
+    if (!isRunning) return;
 
-    // Wait until it is ready
-    const resp = await sendCommand(cmd);
-    console.log(resp);
+    if (cmd.commandStatus === 'done')
+      continue;
 
-    /* Store command results on an intermediate area */ 
+    updateCommandStatus(cmd.id, 'running');
+
+    try {
+      // Wait until it is ready
+      await waitPageLoad();
+    } catch(e) {
+      updateCommandStatus(cmd.id, 'error');
+      break;
+    }
+      
+    try {
+      /* Store command results on an intermediate area */ 
+      const resp = await sendCommand(cmd);
+      updateCommandStatus(cmd.id, 'done')
+      updateCommandResult(cmd.id, resp.payload)
+    } catch(e) {
+      updateCommandStatus(cmd.id, 'error')
+      break;
+    }
+
+    /* Execution speed */
+    await delay(500)
   }
 
+  store.dispatch(changeRunningState(false));
 };
 
 export const locateElement = async () => {
@@ -89,10 +132,4 @@ const sendMessageActiveTab = async (message: Message) => {
   if (!activeTab || !activeTab.id) return;
   return await browser.tabs.sendMessage(activeTab.id, message);
 }
-
-browser.runtime.onMessage.addListener(
-  (request, sender) => {
-    console.log('Message received!', request, sender);
-  }
-);
 

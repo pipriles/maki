@@ -32,6 +32,9 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [ ] Add visual clues to understand the extraction is running
 - [ ] Show errors on UI
 - [ ] Improve select element on document
+- [ ] Implement ability detect a selector shared in multiple elements
+- [ ] Show sample of data extracted below selector parameters
+- [ ] Make commands required to run and allow a command to run isolated
 - [ ] Add play, pause and stop functionality
 - [ ] Add recipes to Redux state
 - [ ] Create default test recipe

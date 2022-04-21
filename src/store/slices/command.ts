@@ -31,6 +31,9 @@ export interface Command {
   commandType: string;
   description: string;
   parameters: CommandParameters;
+  commandStatus?: "running" | "done" | "error";
+  commandResult?: unknown;
+  field: string;
 }
 
 export interface CommandPayload extends Omit<Partial<Command>, 'parameters'> { 
@@ -68,6 +71,7 @@ export const commandFactory = (): Command => ({
   commandType: "",
   description: "",
   parameters: { ...defaultParameters },
+  field: "",
 });
 
 const createNewCommand = (payload?: CommandPayload): Command => {
@@ -127,6 +131,13 @@ export const commandSlice = createSlice({
       const { oldIndex, newIndex } = action.payload;
       state.ids = arrayMove(state.ids, oldIndex, newIndex); 
     },
+    resetAllCommandStatus: (state) => {
+      state.ids.forEach(id => {
+        const command = state.entities[id];
+        if (command !== undefined)
+          command.commandStatus = undefined
+      });
+    },
   }
 });
 
@@ -136,6 +147,7 @@ export const {
   changeCommand, 
   createCommandCopy,
   moveCommand,
+  resetAllCommandStatus,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

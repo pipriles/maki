@@ -3,6 +3,7 @@
     "id": "1",
     "commandType": "EXTRACT_TEXT",
     "description": "",
+    "field": "",
     "parameters": {
       "locator": {
         "query": "",
@@ -26,6 +27,7 @@
     "id": "2",
     "commandType": "CLICK",
     "description": "",
+    "field": "",
     "parameters": {
       "locator": {
         "query": "",
@@ -49,6 +51,7 @@
     "id": "3",
     "commandType": "EXTRACT_ATTRIBUTE",
     "description": "",
+    "field": "",
     "parameters": {
       "locator": {
         "query": "",
@@ -72,6 +75,7 @@
     "id": "4",
     "commandType": "OPEN",
     "description": "",
+    "field": "",
     "parameters": {
       "locator": {
         "query": "",
@@ -95,6 +99,7 @@
     "id": "5",
     "commandType": "CLICK",
     "description": "",
+    "field": "",
     "parameters": {
       "locator": {
         "query": "",
@@ -118,6 +123,7 @@
     "id": "6",
     "commandType": "WAIT_FOR_ELEMENT_PRESENT",
     "description": "",
+    "field": "",
     "parameters": {
       "locator": {
         "query": "",

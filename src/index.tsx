@@ -6,8 +6,10 @@ import { ThemeProvider } from 'react-jss';
 
 import { store } from './store';
 import { changeActiveTab } from './store/slices/app';
-import App from './components/App';
 import { createTheme } from './styles';
+import { Message } from './common/utils';
+
+import App from './components/App';
 
 /* Initialize change tab listener */
 
@@ -18,6 +20,12 @@ const focusWindow = async (windowId: number) => {
   if ( !tab ) return;
   store.dispatch(changeActiveTab(tab));
 }
+
+browser.runtime.sendMessage(true);
+browser.runtime.onMessage.addListener((message: Message) => {
+  if (message.type === 'TAB') 
+    store.dispatch(changeActiveTab(message.payload));
+});
 
 browser.windows.onFocusChanged.addListener(focusWindow);
 
