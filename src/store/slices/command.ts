@@ -148,7 +148,14 @@ export const commandSlice = createSlice({
         command.commandLogger = command.commandLogger 
           ? [ ...command.commandLogger, message ]
           : [ message ] ;
-      }
+      },
+    clearLogMessages: (state) => {
+      state.ids.forEach(commandId => {
+        const command = state.entities[commandId];
+        if (command !== undefined) 
+          command.commandLogger = [];
+      })
+    }
   }
 });
 
@@ -160,6 +167,7 @@ export const {
   moveCommand,
   resetAllCommandStatus,
   commandLogMessage,
+  clearLogMessages,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

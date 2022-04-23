@@ -4,7 +4,7 @@ import { BiPlay, BiPause, BiStop } from 'react-icons/bi';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { commandSelectors } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
-import { resetAllCommandStatus } from '../store/slices/command';
+import { resetAllCommandStatus, clearLogMessages } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 import { runCommands } from '../proxy'
 
@@ -53,6 +53,7 @@ const Toolbar = () => {
     batch(() => {
       dispatch(changeRunningState(false));
       dispatch(resetAllCommandStatus());
+      dispatch(clearLogMessages());
     });
   };
 
