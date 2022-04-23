@@ -24,9 +24,9 @@ const useStyles = createAppUseStyles(theme => ({
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
-      width: theme.sizes(1.5),
-      height: theme.sizes(1.5),
-      fontSize: theme.sizes(1.5),
+      width: theme.sizes(1.25),
+      height: theme.sizes(1.25),
+      fontSize: theme.sizes(1.25),
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.primary.main,
       visibility: "hidden",
@@ -41,6 +41,7 @@ const useStyles = createAppUseStyles(theme => ({
     display: "inline-block",
     marginLeft: theme.spacing(1),
     verticalAlign: "middle",
+    fontSize: theme.sizes(1.5),
   }
 }));
 
