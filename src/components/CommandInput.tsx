@@ -13,7 +13,7 @@ const useStyles = createAppUseStyles((theme) => ({
     display: "flex",
   },
   label: {
-    padding: theme.spacing(1),
+    padding: [theme.spacing(1), theme.spacing(1), theme.spacing(1), theme.spacing(1.5)],
     fontSize: theme.sizes(1.5),
     flexBasis: 120,
     flexShrink: 0,
