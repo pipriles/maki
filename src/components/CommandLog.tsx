@@ -26,8 +26,8 @@ const CommandLog = ({ command }: CommandLogProps) => {
   const styles = useStyles();
 
   const commandLogger = command.commandLogger ?? ['No messages yet']
-  const messages = commandLogger.map((msg) => (
-    <span className={styles.message}>
+  const messages = commandLogger.map((msg, index) => (
+    <span className={styles.message} key={index}>
       {msg}
     </span>
   ))

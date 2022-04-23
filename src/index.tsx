@@ -21,7 +21,7 @@ const focusWindow = async (windowId: number) => {
   store.dispatch(changeActiveTab(tab));
 }
 
-browser.runtime.sendMessage(true);
+browser.runtime.sendMessage(true).catch(() => undefined);
 browser.runtime.onMessage.addListener((message: Message) => {
   if (message.type === 'TAB') 
     store.dispatch(changeActiveTab(message.payload));

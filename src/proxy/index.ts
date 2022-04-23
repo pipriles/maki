@@ -1,7 +1,7 @@
 import { store, select } from '../store';
 import { getActiveTab } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
-import { Command, changeCommand } from '../store/slices/command';
+import { Command, changeCommand, commandLogMessage } from '../store/slices/command';
 import browser from 'webextension-polyfill';
 import { 
   Message, 
@@ -80,6 +80,11 @@ const updateCommandResult = (id: Command['id'], commandResult: Command['commandR
   return store.dispatch(action);
 };
 
+const updateCommandLogger = (id: Command['id'], message: string) => {
+  const action = commandLogMessage({ commandId: id, message });
+  return store.dispatch(action);
+};
+
 export const runCommands = async (commands: Command[]) => {
 
   const isRunning = select(state => state.app.running);
@@ -102,6 +107,7 @@ export const runCommands = async (commands: Command[]) => {
       await waitPageLoad();
     } catch(e) {
       updateCommandStatus(cmd.id, 'error');
+      updateCommandLogger(cmd.id, 'Error waiting for page');
       break;
     }
       
@@ -112,6 +118,11 @@ export const runCommands = async (commands: Command[]) => {
       updateCommandResult(cmd.id, resp.payload)
     } catch(e) {
       updateCommandStatus(cmd.id, 'error')
+      if (typeof e === "string") {
+        updateCommandLogger(cmd.id, e);
+      } else if (e instanceof Error) {
+        updateCommandLogger(cmd.id, e.message);
+      }
       break;
     }
 

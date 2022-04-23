@@ -147,7 +147,7 @@ export const commandSlice = createSlice({
         if (!command) return;
         command.commandLogger = command.commandLogger 
           ? [ ...command.commandLogger, message ]
-          : [] ;
+          : [ message ] ;
       }
   }
 });
@@ -159,6 +159,7 @@ export const {
   createCommandCopy,
   moveCommand,
   resetAllCommandStatus,
+  commandLogMessage,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

@@ -10,7 +10,6 @@ const StripParameter = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const payload = event.target.checked;
-    console.log(payload);
     onChange(payload)
   };
 
