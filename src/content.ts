@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { finder } from '@medv/finder';
 import { Command } from './store/slices/command';
-import { Locator, Executor, Message, makeResponse, makeErrorResponse } from './common/utils';
+import { Locator, Executor, Message, makeResponse, makeErrorResponse, Payload } from './common/utils';
 
 console.log('Listening to commands...');
 
@@ -19,6 +19,13 @@ const getElementByCSS = (query: string, index?: number) => {
 const getElement = (locator: Locator) => {
 
   const { query, queryType } = locator;
+
+  console.log(query);
+  if (!query) {
+    console.log('ERROR!!!!!')
+    throw new Error(`Please define a selector`);
+  }
+
   const extractor = queryType !== 'XPATH' ? getElementByCSS : getElementByXPATH;
 
   return !query ? null : extractor(query);
@@ -29,12 +36,13 @@ const extractText = async ({ parameters }: Command) => {
   const locator = parameters['locator'];
   const element = locator ? getElement(locator) : null;
 
-  if (!element) return null;
+  if (!element)
+    throw new Error(`Element could not be found with selector: ${locator.query}`);
 
   const stripText = parameters['strip'];
-  const string    = element.textContent;
+  const str    = element.textContent;
 
-  return string && stripText ? string.trim() : string;
+  return str && stripText ? str.trim() : str;
 };
 
 const extractAttribute = async ({ parameters }: Command) => {
@@ -43,7 +51,7 @@ const extractAttribute = async ({ parameters }: Command) => {
   const element = locator ? getElement(locator) : null;
 
   if (!(element instanceof Element))
-    return;
+    throw new Error(`Element could not be found with selector: ${locator.query}`);
 
   const name = parameters['attribute'];
   const stripText = parameters['strip'];
@@ -65,12 +73,11 @@ const doClick = async ({ parameters }: Command) => {
   const locator = parameters['locator'];
   const element = locator ? getElement(locator) : null;
 
-  if (!(element instanceof HTMLElement)) {
-    /* Throw error saying that element is not clickable */
-    return;
-  }
+  if (!(element instanceof HTMLElement))
+    throw new Error(`Clickable element could not be found with selector: ${locator.query}`);
 
-  return element.click()
+  element.click()
+  return 'true';
 };
 
 const waitForElementPresent = async ({ parameters }: Command) => {
@@ -79,7 +86,11 @@ const waitForElementPresent = async ({ parameters }: Command) => {
   const timeout = parameters['timeout'];
   const dtStart = Date.now();
 
-  if (!locator || !timeout) return;
+  if (!locator)
+    throw new Error(`Locator not defined`);
+
+  if (!timeout)
+    throw new Error(`Timeout exceeded`);
 
   while (!getElement(locator)) {
     if (Date.now() - dtStart > timeout ) 
@@ -87,7 +98,7 @@ const waitForElementPresent = async ({ parameters }: Command) => {
     await new Promise( resolve => requestAnimationFrame(resolve) ); 
   }
 
-  return true;
+  return 'true';
 };
 
 const waitForElementNotPresent = async ({ parameters }: Command) => {
@@ -96,7 +107,11 @@ const waitForElementNotPresent = async ({ parameters }: Command) => {
   const timeout = parameters['timeout'];
   const dtStart = Date.now();
 
-  if (!locator || !timeout) return;
+  if (!locator)
+    throw new Error(`Locator not defined`);
+
+  if (!timeout)
+    throw new Error(`Timeout exceeded`);
 
   while (getElement(locator)) {
     if (Date.now() - dtStart > timeout ) 
@@ -104,7 +119,7 @@ const waitForElementNotPresent = async ({ parameters }: Command) => {
     await new Promise( resolve => requestAnimationFrame(resolve) ); 
   }
 
-  return true;
+  return 'true';
 };
 
 const sendKeys = async ({ parameters }: Command) => {
@@ -113,12 +128,12 @@ const sendKeys = async ({ parameters }: Command) => {
   const keys  = parameters['text'];
   const element = locator ? getElement(locator) : null;
 
-  if (!(element instanceof HTMLInputElement)) {
+  if (!(element instanceof HTMLInputElement))
     /* Throw error saying that element is not an input */
-    return;
-  }
+    throw new Error(`Input element could not be found with selector: ${locator.query}`);
 
-  if (!keys) return;
+  if (!keys) 
+    throw new Error(`Missing keys to send`);
 
   element.scrollIntoView();
   element.focus();
@@ -138,15 +153,15 @@ const sendKeys = async ({ parameters }: Command) => {
     element.dispatchEvent(input);
   }
 
-  return true
+  return 'true';
 };
 
 const pageWait = () => {
-  return new Promise((resolve) => {
+  return new Promise<Payload>((resolve) => {
     if (['interactive', 'complete'].indexOf(document.readyState) >= 0) {
-      resolve(true);
+      resolve('true');
     } else {
-      document.addEventListener('DOMContentLoaded', () => resolve(true));
+      document.addEventListener('DOMContentLoaded', () => resolve('true'));
     }
   });
 };
@@ -154,18 +169,19 @@ const pageWait = () => {
 const openUrl = async ({ parameters }: Command) => {
   const url = parameters['url'];
 
-  if (!url) return;
+  if (!url) 
+    throw new Error('Missing url to be open');
 
   window.location.href = url;
   return url
 };
 
-const responseFromPromise = async <T>(promise: Promise<T>) => {
+const responseFromPromise = async (promise: Promise<Payload>) => {
   try {
     const value = await promise;
     return makeResponse(value);
   } catch(e) {
-    const payload = { 'message': e instanceof Error ? e.message : null }
+    const payload = { 'message': e instanceof Error ? e.message : 'Unknown error' }
     return makeErrorResponse(payload);
   }
 }
@@ -222,7 +238,7 @@ const preventActions = (event: Event) => {
 };
 
 const findElementSelector = () => {
-  const promise = new Promise((resolve, reject) => {
+  const promise = new Promise<Payload>((resolve, reject) => {
     const locate = (event: MouseEvent) => {
 
       event.stopPropagation();

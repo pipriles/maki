@@ -9,13 +9,17 @@ import {
   Response, 
   makeResponse, 
   makeErrorResponse, 
-  delay
+  delay, 
+  hasOwnProperty,
 } from '../common/utils';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
   const url = parameters.url;
   const activeTab = select(getActiveTab);
+
+  if (!url) 
+    throw new Error('Missing url to be open');
 
   browser.tabs.update(activeTab?.id, { url });
 
@@ -28,7 +32,7 @@ const commandExecutorMap: Record<string, Executor> = {
   'OPEN': openUrl
 };
 
-export const sendCommand = async (command: Command): Promise<Response<unknown>> => {
+export const sendCommand = async (command: Command): Promise<Response> => {
 
   const action = commandExecutorMap[command.commandType];
 
@@ -85,6 +89,20 @@ const updateCommandLogger = (id: Command['id'], message: string) => {
   return store.dispatch(action);
 };
 
+const reportCommandError = (command: Command, error: unknown) => {
+
+  updateCommandStatus(command.id, 'error')
+
+  if (typeof error === "string") {
+    updateCommandLogger(command.id, error);
+  } else if (error instanceof Error) {
+    updateCommandLogger(command.id, error.message);
+  } else if (hasOwnProperty(error, 'message')) {
+    const msg = typeof error.message === 'string' ? error.message : '';
+    updateCommandLogger(command.id, msg);
+  }
+}
+
 export const runCommands = async (commands: Command[]) => {
 
   const isRunning = select(state => state.app.running);
@@ -106,23 +124,26 @@ export const runCommands = async (commands: Command[]) => {
       // Wait until it is ready
       await waitPageLoad();
     } catch(e) {
-      updateCommandStatus(cmd.id, 'error');
-      updateCommandLogger(cmd.id, 'Error waiting for page');
+      reportCommandError(cmd, 'Error waiting for page');
       break;
     }
       
     try {
       /* Store command results on an intermediate area */ 
       const resp = await sendCommand(cmd);
-      updateCommandStatus(cmd.id, 'done')
-      updateCommandResult(cmd.id, resp.payload)
-    } catch(e) {
-      updateCommandStatus(cmd.id, 'error')
-      if (typeof e === "string") {
-        updateCommandLogger(cmd.id, e);
-      } else if (e instanceof Error) {
-        updateCommandLogger(cmd.id, e.message);
+
+      if (resp.type == 'ERROR') {
+        reportCommandError(cmd, resp.payload);
+        break;
       }
+
+      if (resp.type == 'SUCCESS') {
+        updateCommandStatus(cmd.id, 'done')
+        updateCommandResult(cmd.id, resp.payload)
+      }
+
+    } catch(e) {
+      reportCommandError(cmd, e);
       break;
     }
 

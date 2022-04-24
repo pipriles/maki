@@ -6,7 +6,7 @@ import { CommandPayload, CommandParameters, changeCommand } from '../store/slice
 import CommandTypes from '../constants/commandTypes.json';
 
 import CommandParameter from './CommandParameter';
-import { hasOwnProperty } from './utils';
+import { isPropertyOf } from '../common/utils';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -26,7 +26,7 @@ const CommandParametersComponent = () => {
   const dispatch = useAppDispatch();
   const currentCommand = useAppSelector(getCurrentCommand);
 
-  if (currentCommand === undefined || !hasOwnProperty(CommandTypes, currentCommand.commandType))
+  if (currentCommand === undefined || !isPropertyOf(currentCommand.commandType, CommandTypes))
     return null;
 
   const parameters = CommandTypes[currentCommand.commandType]
@@ -50,7 +50,7 @@ const CommandParametersComponent = () => {
 
     const propertyKey = key.toLowerCase();
 
-    if (!hasOwnProperty(currentParameters, propertyKey)) 
+    if (!isPropertyOf(propertyKey, currentParameters)) 
       return null;
 
     return (

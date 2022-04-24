@@ -34,6 +34,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [ ] Add command autocomplete
 - [ ] Improve select element on document
 - [ ] Implement ability detect a selector shared in multiple elements
+- [ ] Highlight elements being selected by query
 - [ ] Show sample of data extracted below selector parameters
 - [ ] Make commands required to run and allow a command to run isolated
 - [ ] Add play, pause and stop functionality
