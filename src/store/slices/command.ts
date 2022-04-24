@@ -33,6 +33,7 @@ export interface Command {
   parameters: CommandParameters;
   commandStatus?: "running" | "done" | "error";
   commandResult?: unknown;
+  commandLogger?: string[];
   field: string;
 }
 
@@ -138,6 +139,23 @@ export const commandSlice = createSlice({
           command.commandStatus = undefined
       });
     },
+    commandLogMessage: (
+      state, 
+      action: PayloadAction<{ commandId: Command['id'], message: string }>) => {
+        const { commandId, message } = action.payload;
+        const command = state.entities[commandId];
+        if (!command) return;
+        command.commandLogger = command.commandLogger 
+          ? [ message, ...command.commandLogger ]
+          : [ message ] ;
+      },
+    clearLogMessages: (state) => {
+      state.ids.forEach(commandId => {
+        const command = state.entities[commandId];
+        if (command !== undefined) 
+          command.commandLogger = [];
+      })
+    }
   }
 });
 
@@ -148,6 +166,8 @@ export const {
   createCommandCopy,
   moveCommand,
   resetAllCommandStatus,
+  commandLogMessage,
+  clearLogMessages,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

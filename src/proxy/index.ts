@@ -1,7 +1,7 @@
 import { store, select } from '../store';
 import { getActiveTab } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
-import { Command, changeCommand } from '../store/slices/command';
+import { Command, changeCommand, commandLogMessage } from '../store/slices/command';
 import browser from 'webextension-polyfill';
 import { 
   Message, 
@@ -9,13 +9,17 @@ import {
   Response, 
   makeResponse, 
   makeErrorResponse, 
-  delay
+  delay, 
+  hasOwnProperty,
 } from '../common/utils';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
   const url = parameters.url;
   const activeTab = select(getActiveTab);
+
+  if (!url) 
+    throw new Error('Missing url to be open');
 
   browser.tabs.update(activeTab?.id, { url });
 
@@ -28,7 +32,7 @@ const commandExecutorMap: Record<string, Executor> = {
   'OPEN': openUrl
 };
 
-export const sendCommand = async (command: Command): Promise<Response<unknown>> => {
+export const sendCommand = async (command: Command): Promise<Response> => {
 
   const action = commandExecutorMap[command.commandType];
 
@@ -80,6 +84,25 @@ const updateCommandResult = (id: Command['id'], commandResult: Command['commandR
   return store.dispatch(action);
 };
 
+const updateCommandLogger = (id: Command['id'], message: string) => {
+  const action = commandLogMessage({ commandId: id, message });
+  return store.dispatch(action);
+};
+
+const reportCommandError = (command: Command, error: unknown) => {
+
+  updateCommandStatus(command.id, 'error')
+
+  if (typeof error === "string") {
+    updateCommandLogger(command.id, error);
+  } else if (error instanceof Error) {
+    updateCommandLogger(command.id, error.message);
+  } else if (hasOwnProperty(error, 'message')) {
+    const msg = typeof error.message === 'string' ? error.message : '';
+    updateCommandLogger(command.id, msg);
+  }
+}
+
 export const runCommands = async (commands: Command[]) => {
 
   const isRunning = select(state => state.app.running);
@@ -101,17 +124,26 @@ export const runCommands = async (commands: Command[]) => {
       // Wait until it is ready
       await waitPageLoad();
     } catch(e) {
-      updateCommandStatus(cmd.id, 'error');
+      reportCommandError(cmd, 'Error waiting for page');
       break;
     }
       
     try {
       /* Store command results on an intermediate area */ 
       const resp = await sendCommand(cmd);
-      updateCommandStatus(cmd.id, 'done')
-      updateCommandResult(cmd.id, resp.payload)
+
+      if (resp.type == 'ERROR') {
+        reportCommandError(cmd, resp.payload);
+        break;
+      }
+
+      if (resp.type == 'SUCCESS') {
+        updateCommandStatus(cmd.id, 'done')
+        updateCommandResult(cmd.id, resp.payload)
+      }
+
     } catch(e) {
-      updateCommandStatus(cmd.id, 'error')
+      reportCommandError(cmd, e);
       break;
     }
 

@@ -1,21 +1,20 @@
 import React from 'react';
 
-import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { getCurrentCommand } from '../store/selectors';
-import { changeCommand } from '../store/slices/command';
+import { useAppDispatch } from '../store/hooks';
+import { Command, changeCommand } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 
 const useStyles = createAppUseStyles((theme) => ({
   root: {
-    backgroundColor: theme.lighten(theme.palette.background, 0.5),
+    backgroundColor: theme.lighten(theme.palette.background, 0.15),
     borderTop: ["1px", "solid", theme.lighten(theme.palette.background, 1)],
   },
   group: {
     display: "flex",
   },
   label: {
-    padding: theme.spacing(1),
-    fontSize: theme.sizes(1.75),
+    padding: [theme.spacing(1), theme.spacing(1), theme.spacing(1), theme.spacing(1.5)],
+    fontSize: theme.sizes(1.5),
     flexBasis: 120,
     flexShrink: 0,
   },
@@ -26,9 +25,12 @@ const useStyles = createAppUseStyles((theme) => ({
   },
 }));
 
-const CommandInput = () => {
+interface CommandInputProps {
+  command: Command;
+}
 
-  const command = useAppSelector(getCurrentCommand);
+const CommandInput = ({ command }: CommandInputProps) => {
+
   const dispatch = useAppDispatch();
   const styles = useStyles();
 

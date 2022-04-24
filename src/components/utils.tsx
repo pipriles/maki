@@ -8,10 +8,6 @@ export interface ICommandParametersProps<T extends keyof CommandParameters> {
   onChange: (payload: Partial<CommandParameters[T]>) => void;
 }
 
-export const hasOwnProperty = <X extends {}>(obj: X, key: PropertyKey): key is keyof X => {
-  return obj.hasOwnProperty(key);
-}
-
 export const useContextMenu = () => {
 
   const contextMenu = useAppSelector(state => state.ui.contextMenu);

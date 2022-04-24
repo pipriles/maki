@@ -22,19 +22,31 @@ export interface LocatorMessage {
 }
 
 export type Message = CommandMessage | TabMessage | LocatorMessage;
+export type Payload = string | Record<string, string> | null;
 
-export interface Response<T> {
+export interface Response {
   type: 'SUCCESS' | 'ERROR';
-  payload: T;
+  payload: Payload;
 }
 
-export type Executor = (command: Command) => Promise<unknown>;
+export type Executor = (command: Command) => Promise<Payload>;
 
-export const makeResponse      = <T>(payload: T): Response<T> => ({ type: 'SUCCESS', payload });
-export const makeErrorResponse = <T>(payload: T): Response<T> => ({ type: 'ERROR'  , payload });
+export const makeResponse      = (payload: Payload): Response => ({ type: 'SUCCESS', payload });
+export const makeErrorResponse = (payload: Payload): Response => ({ type: 'ERROR'  , payload });
 
 export const delay = (milliseconds: number) => {
   return new Promise<void>((resolve) => {
     setTimeout(() => resolve(), milliseconds);
   });
+}
+
+export const hasOwnProperty = <
+  X extends unknown, 
+  K extends PropertyKey
+>(obj: X, key: K): obj is X & Record<K, unknown> => {
+  return obj instanceof Object && obj.hasOwnProperty(key);
+}
+
+export const isPropertyOf = <X extends {}>(key: PropertyKey, obj: X): key is keyof X => {
+  return obj.hasOwnProperty(key);
 }

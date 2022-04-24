@@ -37,7 +37,7 @@ const useStyles = createAppUseStyles(theme => ({
     input: {
       outline: "none",
       background: "none",
-      border: ["1px", "solid", theme.palette.primary.main],
+      border: ["1px", "solid", theme.lighten(theme.palette.background, 1)],
       color: theme.palette.typography.primary,
       padding: theme.spacing(1),
       fontFamily: theme.typography.fontFamily,

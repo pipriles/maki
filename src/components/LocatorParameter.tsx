@@ -13,8 +13,9 @@ const useStyles = createAppUseStyles(theme => ({
     flexGrow: 1,
   },
   button: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.text,
+    marginLeft: theme.spacing(1),
+    backgroundColor: theme.lighten(theme.palette.background, 1),
+    color: theme.darken(theme.palette.typography.primary, 0.25),
     padding: theme.spacing(0),
     width: theme.sizes(4),
     display: "flex",
@@ -22,6 +23,9 @@ const useStyles = createAppUseStyles(theme => ({
     alignItems: "center",
     flexShrink: 0,
     fontSize: "1.125em",
+    '&:hover': {
+      color: theme.palette.primary.main,
+    }
   }
 }));
 
@@ -49,7 +53,7 @@ const LocatorParameter = ({ parameter, onChange }: LocatorParameterProps) => {
       <input 
         className={styles.input}
         placeholder="Query" 
-        value={ parameter.query }
+        value={ parameter.query ?? '' }
         onChange={ handleChange }
       />
       <button 
