@@ -35,6 +35,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [ ] Add preview result
 - [ ] Add way to run single command
 - [ ] Improve select element on document
+- [ ] Show matches count
 - [ ] Implement ability detect a selector shared in multiple elements
 - [ ] Highlight elements being selected by query
 - [ ] Show sample of data extracted below selector parameters
