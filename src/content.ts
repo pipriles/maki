@@ -20,11 +20,8 @@ const getElement = (locator: Locator) => {
 
   const { query, queryType } = locator;
 
-  console.log(query);
-  if (!query) {
-    console.log('ERROR!!!!!')
+  if (!query)
     throw new Error(`Please define a selector`);
-  }
 
   const extractor = queryType !== 'XPATH' ? getElementByCSS : getElementByXPATH;
 
@@ -54,6 +51,10 @@ const extractAttribute = async ({ parameters }: Command) => {
     throw new Error(`Element could not be found with selector: ${locator.query}`);
 
   const name = parameters['attribute'];
+
+  if (!name)
+    throw new Error(`Missing attribute name`);
+
   const stripText = parameters['strip'];
   const attribute = name ? element.getAttribute(name) : null;
 

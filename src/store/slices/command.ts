@@ -146,7 +146,7 @@ export const commandSlice = createSlice({
         const command = state.entities[commandId];
         if (!command) return;
         command.commandLogger = command.commandLogger 
-          ? [ ...command.commandLogger, message ]
+          ? [ message, ...command.commandLogger ]
           : [ message ] ;
       },
     clearLogMessages: (state) => {
