@@ -21,13 +21,12 @@ interface CommandOutputProps {
 const CommandOutput = ({ command }: CommandOutputProps) => {
 
   const styles = useStyles();
-  const commandResult = { id: 1, name: "asd", price: "2.34$" };
-  const result = JSON.stringify(commandResult, null, 2);
+  const commandResult = JSON.stringify({ id: 1, name: "Book", price: 2.82 }, null, 2);
 
   return (
     <div className={styles.root}>
       <pre className={styles.pre}>
-        {result}
+        {commandResult}
       </pre>
     </div>
   );

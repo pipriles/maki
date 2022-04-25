@@ -1,4 +1,5 @@
 import React from 'react';
+import { Resizable } from 're-resizable';
 import { useAppSelector, } from '../store/hooks';
 import { getCurrentCommand } from '../store/selectors';
 import { createAppUseStyles } from '../styles';
@@ -29,8 +30,8 @@ const useStyles = createAppUseStyles(theme => ({
     borderBottom: [2, "solid", theme.palette.primary.main],
   },
   body: {
-    height: 94,
-    maxHeight: 94,
+    // height: 94,
+    // maxHeight: 94,
   }
 }));
 
@@ -102,16 +103,23 @@ const CommandPanel = () => {
 
   return (
     <div className={styles.root}>
-      <PanelTabs value={currentTab} onChange={handleChange}>
-        <span>Command</span>
-        <span>Log</span>
-        <span>Output</span>
-      </PanelTabs>
-      <PanelBody value={currentTab}>
-        <CommandInput command={command} />
-        <CommandLog command={command} />
-        <CommandOutput command={command} />
-      </PanelBody>
+      <Resizable 
+        defaultSize={{ width: 'auto', height: 126 }} 
+        minHeight={126} 
+        maxHeight={300}
+        enable={{ top: true }}
+      >
+        <PanelTabs value={currentTab} onChange={handleChange}>
+          <span>Command</span>
+          <span>Log</span>
+          <span>Output</span>
+        </PanelTabs>
+        <PanelBody value={currentTab}>
+          <CommandInput command={command} />
+          <CommandLog command={command} />
+          <CommandOutput command={command} />
+        </PanelBody>
+      </Resizable>
     </div>
   )
 };
