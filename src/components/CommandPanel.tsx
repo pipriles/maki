@@ -12,6 +12,11 @@ const useStyles = createAppUseStyles(theme => ({
   root: {
     borderTop: ["1px", "solid", theme.palette.background],
   },
+  inner: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+  },
   tabs: {
     display: "flex",
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
@@ -30,8 +35,7 @@ const useStyles = createAppUseStyles(theme => ({
     borderBottom: [2, "solid", theme.palette.primary.main],
   },
   body: {
-    // height: 94,
-    // maxHeight: 94,
+    overflow: "auto"
   }
 }));
 
@@ -109,16 +113,18 @@ const CommandPanel = () => {
         maxHeight={300}
         enable={{ top: true }}
       >
-        <PanelTabs value={currentTab} onChange={handleChange}>
-          <span>Command</span>
-          <span>Log</span>
-          <span>Output</span>
-        </PanelTabs>
-        <PanelBody value={currentTab}>
-          <CommandInput command={command} />
-          <CommandLog command={command} />
-          <CommandOutput command={command} />
-        </PanelBody>
+        <div className={styles.inner}>
+          <PanelTabs value={currentTab} onChange={handleChange}>
+            <span>Command</span>
+            <span>Log</span>
+            <span>Output</span>
+          </PanelTabs>
+          <PanelBody value={currentTab}>
+            <CommandInput command={command} />
+            <CommandLog command={command} />
+            <CommandOutput command={command} />
+          </PanelBody>
+        </div>
       </Resizable>
     </div>
   )
