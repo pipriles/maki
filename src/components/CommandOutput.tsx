@@ -21,7 +21,7 @@ interface CommandOutputProps {
 const CommandOutput = ({ command }: CommandOutputProps) => {
 
   const styles = useStyles();
-  const commandResult = JSON.stringify({ id: 1, name: "Book", price: 2.82 }, null, 2);
+  const commandResult = JSON.stringify(command.commandResult, null, 2);
 
   return (
     <div className={styles.root}>
