@@ -116,13 +116,13 @@ const CommandPanel = () => {
         <div className={styles.inner}>
           <PanelTabs value={currentTab} onChange={handleChange}>
             <span>Command</span>
-            <span>Log</span>
             <span>Output</span>
+            <span>Log</span>
           </PanelTabs>
           <PanelBody value={currentTab}>
             <CommandInput command={command} />
-            <CommandLog command={command} />
             <CommandOutput command={command} />
+            <CommandLog command={command} />
           </PanelBody>
         </div>
       </Resizable>
