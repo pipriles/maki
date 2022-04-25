@@ -1,14 +1,21 @@
 import React from 'react';
+import { Resizable } from 're-resizable';
 import { useAppSelector, } from '../store/hooks';
 import { getCurrentCommand } from '../store/selectors';
 import { createAppUseStyles } from '../styles';
 
 import CommandInput from './CommandInput';
 import CommandLog from './CommandLog';
+import CommandOutput from './CommandOutput';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
     borderTop: ["1px", "solid", theme.palette.background],
+  },
+  inner: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
   },
   tabs: {
     display: "flex",
@@ -17,6 +24,8 @@ const useStyles = createAppUseStyles(theme => ({
   tab: {
     fontSize: theme.sizes(1.75),
     padding: [theme.spacing(0.75), theme.spacing(1.5)],
+    minWidth: 75,
+    textAlign: 'center',
     cursor: "pointer",
     '&:hover': {
       backgroundColor: theme.lighten(theme.palette.background, 0.25),
@@ -26,8 +35,7 @@ const useStyles = createAppUseStyles(theme => ({
     borderBottom: [2, "solid", theme.palette.primary.main],
   },
   body: {
-    height: 94,
-    maxHeight: 94,
+    overflow: "auto"
   }
 }));
 
@@ -99,14 +107,25 @@ const CommandPanel = () => {
 
   return (
     <div className={styles.root}>
-      <PanelTabs value={currentTab} onChange={handleChange}>
-        <span>Command</span>
-        <span>Messages</span>
-      </PanelTabs>
-      <PanelBody value={currentTab}>
-        <CommandInput command={command} />
-        <CommandLog command={command} />
-      </PanelBody>
+      <Resizable 
+        defaultSize={{ width: 'auto', height: 126 }} 
+        minHeight={126} 
+        maxHeight={300}
+        enable={{ top: true }}
+      >
+        <div className={styles.inner}>
+          <PanelTabs value={currentTab} onChange={handleChange}>
+            <span>Command</span>
+            <span>Output</span>
+            <span>Log</span>
+          </PanelTabs>
+          <PanelBody value={currentTab}>
+            <CommandInput command={command} />
+            <CommandOutput command={command} />
+            <CommandLog command={command} />
+          </PanelBody>
+        </div>
+      </Resizable>
     </div>
   )
 };
