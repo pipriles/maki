@@ -30,7 +30,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add property on command to set the name of the data being extracted
 - [x] Add reducers to change command status
 - [x] Add visual clues to understand the extraction is running
-- [ ] Show errors on UI
+- [x] Show errors on UI
 - [ ] Add command autocomplete
 - [ ] Add preview result
 - [ ] Add way to run single command

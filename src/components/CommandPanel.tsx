@@ -5,6 +5,7 @@ import { createAppUseStyles } from '../styles';
 
 import CommandInput from './CommandInput';
 import CommandLog from './CommandLog';
+import CommandOutput from './CommandOutput';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -17,6 +18,8 @@ const useStyles = createAppUseStyles(theme => ({
   tab: {
     fontSize: theme.sizes(1.75),
     padding: [theme.spacing(0.75), theme.spacing(1.5)],
+    minWidth: 75,
+    textAlign: 'center',
     cursor: "pointer",
     '&:hover': {
       backgroundColor: theme.lighten(theme.palette.background, 0.25),
@@ -101,11 +104,13 @@ const CommandPanel = () => {
     <div className={styles.root}>
       <PanelTabs value={currentTab} onChange={handleChange}>
         <span>Command</span>
-        <span>Messages</span>
+        <span>Log</span>
+        <span>Output</span>
       </PanelTabs>
       <PanelBody value={currentTab}>
         <CommandInput command={command} />
         <CommandLog command={command} />
+        <CommandOutput command={command} />
       </PanelBody>
     </div>
   )
