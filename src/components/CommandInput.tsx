@@ -4,6 +4,9 @@ import { useAppDispatch } from '../store/hooks';
 import { Command, changeCommand } from '../store/slices/command';
 import { createAppUseStyles } from '../styles';
 
+import Autocomplete from './Autocomplete';
+import CommandTypes from '../constants/commandTypes.json';
+
 const useStyles = createAppUseStyles((theme) => ({
   root: {
     backgroundColor: theme.lighten(theme.palette.background, 0.15),
@@ -56,11 +59,12 @@ const CommandInput = ({ command }: CommandInputProps) => {
     <div className={styles.root}>
       <div className={styles.group}>
         <span className={styles.label}>Command</span>
-        <input 
-          className={styles.input} 
-          value={command.commandType}
+        <Autocomplete 
+          className={styles.input}
+          value={command.commandType} 
           onChange={onCommandTypeChange}
-        />
+          options={Object.keys(CommandTypes)}
+        /> 
       </div>
       <div className={styles.group}>
         <span className={styles.label}>Field*</span>
