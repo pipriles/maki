@@ -12,6 +12,8 @@ const useStyles = createAppUseStyles(theme => ({
     listStyle: "none",
     margin: 0,
     padding: 0,
+    height: 200,
+    overflow: "auto",
   },
   option: {
     fontSize: 12,
@@ -35,8 +37,8 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
     <li key={opt} className={styles.option}>{opt}</li>
   ));
 
-  const boxStyles = {};
-  console.log(element.current?.clientTop, element.current?.clientLeft);
+  const rect = element.current?.getBoundingClientRect();
+  const boxStyles = { top: rect?.top ?? 'unset', transform: "translateY(-100%)" }
 
   return (
     <div className={styles.root}>
@@ -46,7 +48,7 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
           value={value}
           onChange={onChange}
         />
-        <ul className={styles.options}>
+        <ul className={styles.options} style={boxStyles}>
           {suggestions}
         </ul>
     </div>
