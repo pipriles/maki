@@ -26,13 +26,16 @@ const useStyles = createAppUseStyles(theme => ({
     '&:hover, &:focus': {
       backgroundColor: theme.lighten(theme.palette.background, 0.5),
     }
-  }
+  },
+  current: {
+    backgroundColor: theme.lighten(theme.palette.background, 0.5),
+  },
 }));
 
 interface AutocompleteProps {
   value: string;
   options: string[];
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (value: string) => void;
   className?: string;
 }
 
@@ -40,16 +43,93 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
 
   const styles = useStyles();
 
-  const suggestions = options.map(opt => (
-    <li key={opt} className={styles.option}>{opt}</li>
-  ));
+  const [open, setOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState(-1);
+
+  const filteredOptions = options.filter(opt => opt.startsWith(value.toUpperCase()))
+
+  const handleFocus = (_event: React.FocusEvent) => {
+    setOpen(true);
+  };
+
+  const handleBlur = (event: React.FocusEvent) => {
+    if (!event.relatedTarget?.classList.contains(styles.option))
+      setOpen(false);
+  };
+
+  const onElementClick = (value: string) => (_event: React.MouseEvent) => {
+    onChange(value);
+    setOpen(false);
+  };
+
+  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(event.target.value);
+    setOpen(true);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    console.log(event);
+
+    if (event.key == "ArrowDown") {
+      const next = (selected === -1 ? 0 : selected + 1) % filteredOptions.length;
+      setSelected(next)
+      event.preventDefault();
+    }
+
+    else if (event.key == "ArrowUp") {
+      const length = filteredOptions.length;
+      const next = (selected === -1 || selected === 0 ? length - 1: selected - 1);
+      setSelected(next)
+      event.preventDefault();
+    }
+
+    else if (event.key == "Enter") {
+      setOpen(false);
+      onChange(filteredOptions[selected]);
+    }
+
+    else if (event.key == "Tab") {
+      event.preventDefault();
+    }
+  };
+
+  let renderSuggestions = null;
+
+  if (open && filteredOptions.length > 1) {
+    renderSuggestions = (
+      <ul className={styles.options}>
+        {filteredOptions.map((opt, index) => {
+          const currentOption = opt === value || index == selected;
+          const classNames = [styles.option];
+
+          if (currentOption) 
+            classNames.push(styles.current);
+
+          return (
+            <li 
+              tabIndex={-1}
+              key={opt} 
+              className={classNames.join(' ')} 
+              onClick={onElementClick(opt)}>
+              {opt}
+            </li>
+          )
+        })}
+      </ul>
+    );
+  }
 
   return (
     <div className={styles.root}>
-      <input className={className} value={value} onChange={onChange} />
-      <ul className={styles.options}>
-        {suggestions}
-      </ul>
+      <input 
+        className={className} 
+        value={value}
+        onChange={onInputChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+      />
+      {renderSuggestions}
     </div>
   );
 };

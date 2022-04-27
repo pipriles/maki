@@ -40,8 +40,8 @@ const CommandInput = ({ command }: CommandInputProps) => {
   if (command === undefined)
     return null;
 
-  const onCommandTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const payload = { id: command.id, commandType: event.target.value }
+  const onCommandTypeChange = (value: string) => {
+    const payload = { id: command.id, commandType: value }
     dispatch(changeCommand(payload))
   };
 
