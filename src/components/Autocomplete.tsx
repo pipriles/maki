@@ -47,8 +47,6 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
   const [selected, setSelected] = React.useState(0);
 
   const filteredOptions = options.filter(opt => opt.startsWith(value.toUpperCase()))
-  console.log(options);
-  console.log(filteredOptions);
 
   const handleFocus = (_event: React.FocusEvent) => {
     setOpen(true);
