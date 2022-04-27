@@ -107,8 +107,14 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
           if (currentOption) 
             classNames.push(styles.current);
 
+          const handleRef = (element: HTMLLIElement) => {
+            if (index === selected) 
+              element?.scrollIntoView();
+          }
+
           return (
             <li 
+              ref={handleRef}
               tabIndex={-1}
               key={opt} 
               className={classNames.join(' ')} 
