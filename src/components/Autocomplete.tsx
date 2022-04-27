@@ -98,7 +98,7 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
 
   let renderSuggestions = null;
 
-  if (open) {
+  if (open && filteredOptions.indexOf(value) === -1) {
     renderSuggestions = (
       <ul className={styles.options}>
         {filteredOptions.map((opt, index) => {
