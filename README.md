@@ -31,9 +31,10 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add reducers to change command status
 - [x] Add visual clues to understand the extraction is running
 - [x] Show errors on UI
-- [ ] Add command autocomplete
-- [ ] Add preview result
+- [x] Add command autocomplete
+- [x] Add preview result
 - [ ] Add way to run single command
+- [ ] Add export feature
 - [ ] Improve select element on document
 - [ ] Show matches count
 - [ ] Implement ability detect a selector shared in multiple elements
