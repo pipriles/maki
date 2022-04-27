@@ -35,7 +35,7 @@ const useStyles = createAppUseStyles(theme => ({
     borderBottom: [2, "solid", theme.palette.primary.main],
   },
   body: {
-    overflow: "auto"
+    // overflow: "auto"
   }
 }));
 
