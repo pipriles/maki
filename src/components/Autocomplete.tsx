@@ -68,7 +68,6 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(event);
 
     if (event.key == "ArrowDown") {
       const next = (selected === -1 ? 0 : selected + 1) % filteredOptions.length;
@@ -86,9 +85,12 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
     else if (event.key == "Enter") {
       setOpen(false);
       onChange(filteredOptions[selected]);
+      setSelected(-1);
     }
 
     else if (event.key == "Tab") {
+      const next = (selected === -1 ? 0 : selected + 1) % filteredOptions.length;
+      setSelected(next);
       event.preventDefault();
     }
   };
