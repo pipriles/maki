@@ -82,8 +82,11 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
     }
 
     else if (event.key == "Enter") {
+
+      if (filteredOptions[selected] !== undefined)
+        onChange(filteredOptions[selected]);
+
       setOpen(false);
-      onChange(filteredOptions[selected]);
       setSelected(0);
     }
 
