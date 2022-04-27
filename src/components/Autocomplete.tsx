@@ -17,7 +17,7 @@ const useStyles = createAppUseStyles(theme => ({
     zIndex: 99,
     bottom: "100%",
     width: "100%",
-    // transform: "translateY(-100%)",
+    boxShadow: "0 0 15px -10px black",
   },
   option: {
     fontSize: 12,
@@ -44,9 +44,11 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
   const styles = useStyles();
 
   const [open, setOpen] = React.useState(false);
-  const [selected, setSelected] = React.useState(-1);
+  const [selected, setSelected] = React.useState(0);
 
   const filteredOptions = options.filter(opt => opt.startsWith(value.toUpperCase()))
+  console.log(options);
+  console.log(filteredOptions);
 
   const handleFocus = (_event: React.FocusEvent) => {
     setOpen(true);
@@ -70,14 +72,13 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
 
     if (event.key == "ArrowDown") {
-      const next = (selected === -1 ? 0 : selected + 1) % filteredOptions.length;
+      const next = (selected + 1) % filteredOptions.length;
       setSelected(next)
       event.preventDefault();
     }
 
     else if (event.key == "ArrowUp") {
-      const length = filteredOptions.length;
-      const next = (selected === -1 || selected === 0 ? length - 1: selected - 1);
+      const next = (selected === 0 ? filteredOptions.length - 1: selected - 1);
       setSelected(next)
       event.preventDefault();
     }
@@ -85,11 +86,11 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
     else if (event.key == "Enter") {
       setOpen(false);
       onChange(filteredOptions[selected]);
-      setSelected(-1);
+      setSelected(0);
     }
 
     else if (event.key == "Tab") {
-      const next = (selected === -1 ? 0 : selected + 1) % filteredOptions.length;
+      const next = (selected + 1) % filteredOptions.length;
       setSelected(next);
       event.preventDefault();
     }
@@ -97,7 +98,7 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
 
   let renderSuggestions = null;
 
-  if (open && filteredOptions.length > 1) {
+  if (open) {
     renderSuggestions = (
       <ul className={styles.options}>
         {filteredOptions.map((opt, index) => {
@@ -109,7 +110,7 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
 
           const handleRef = (element: HTMLLIElement) => {
             if (index === selected) 
-              element?.scrollIntoView();
+              element?.scrollIntoView(false);
           }
 
           return (
