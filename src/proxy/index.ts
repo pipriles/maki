@@ -1,8 +1,9 @@
+import browser from 'webextension-polyfill';
+
 import { store, select } from '../store';
-import { getActiveTab } from '../store/selectors';
+import { getActiveTab, commandSelectors } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
 import { Command, changeCommand, commandLogMessage } from '../store/slices/command';
-import browser from 'webextension-polyfill';
 import { 
   Message, 
   Executor, 
@@ -103,6 +104,45 @@ const reportCommandError = (command: Command, error: unknown) => {
   }
 }
 
+export const runSingleCommandById = async (commandId: Command['id']) => {
+  const command = select(state => commandSelectors.selectById(state, commandId));
+  return command !== undefined ? runSingleCommand(command) : false;
+};
+
+export const runSingleCommand = async (command: Command) => {
+
+  updateCommandStatus(command.id, 'running');
+
+  try {
+    // Wait until it is ready
+    await waitPageLoad();
+  } catch(e) {
+    reportCommandError(command, 'Error waiting for page');
+    return false;
+  }
+
+  try {
+    /* Store command results on an intermediate area */ 
+    const resp = await sendCommand(command);
+
+    if (resp.type == 'ERROR') {
+      reportCommandError(command, resp.payload);
+      return false;
+    }
+
+    if (resp.type == 'SUCCESS') {
+      updateCommandStatus(command.id, 'done')
+      updateCommandResult(command.id, resp.payload)
+    }
+
+  } catch(e) {
+    reportCommandError(command, e);
+    return false;
+  }
+
+  return true;
+};
+
 export const runCommands = async (commands: Command[]) => {
 
   const isRunning = select(state => state.app.running);
@@ -118,34 +158,8 @@ export const runCommands = async (commands: Command[]) => {
     if (cmd.commandStatus === 'done')
       continue;
 
-    updateCommandStatus(cmd.id, 'running');
-
-    try {
-      // Wait until it is ready
-      await waitPageLoad();
-    } catch(e) {
-      reportCommandError(cmd, 'Error waiting for page');
+    if(!await runSingleCommand(cmd)) 
       break;
-    }
-      
-    try {
-      /* Store command results on an intermediate area */ 
-      const resp = await sendCommand(cmd);
-
-      if (resp.type == 'ERROR') {
-        reportCommandError(cmd, resp.payload);
-        break;
-      }
-
-      if (resp.type == 'SUCCESS') {
-        updateCommandStatus(cmd.id, 'done')
-        updateCommandResult(cmd.id, resp.payload)
-      }
-
-    } catch(e) {
-      reportCommandError(cmd, e);
-      break;
-    }
 
     /* Execution speed */
     await delay(500)

@@ -30,10 +30,11 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add property on command to set the name of the data being extracted
 - [x] Add reducers to change command status
 - [x] Add visual clues to understand the extraction is running
+- [x] Add play, pause and stop functionality
 - [x] Show errors on UI
 - [x] Add command autocomplete
 - [x] Add preview result
-- [ ] Add way to run single command
+- [x] Add way to run single command
 - [ ] Add export feature
 - [ ] Improve select element on document
 - [ ] Show matches count
@@ -41,6 +42,5 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [ ] Highlight elements being selected by query
 - [ ] Show sample of data extracted below selector parameters
 - [ ] Make commands required to run and allow a command to run isolated
-- [ ] Add play, pause and stop functionality
 - [ ] Add recipes to Redux state
 - [ ] Create default test recipe
