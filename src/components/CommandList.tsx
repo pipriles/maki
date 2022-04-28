@@ -74,6 +74,33 @@ const CommandList = () => {
     });
   }, [dispatch, currentCommand]);
 
+  const handleRunCommand = React.useCallback(() => {
+    if (currentCommand?.id)
+      runSingleCommandById(currentCommand.id);
+  }, [dispatch, currentCommand]);
+
+  const handleArrowDown = React.useCallback(() => {
+
+    const index = currentCommand 
+      ? commands.findIndex(command => command.id === currentCommand.id)
+      : -1
+
+    const nextCommand = commands[index+1];
+    dispatch(changeCurrentCommand(nextCommand?.id))
+
+  }, [dispatch, currentCommand]);
+
+  const handleArrowUp = React.useCallback(() => {
+
+    const index = currentCommand 
+      ? commands.findIndex(command => command.id === currentCommand.id)
+      : -1;
+
+    const nextCommand = index <= 0 ? commands[commands.length-1] : commands[index-1];
+    dispatch(changeCurrentCommand(nextCommand?.id))
+
+  }, [dispatch, currentCommand]);
+
   const handleKeyDown = React.useCallback((event: KeyboardEvent) => {
 
     if (event.target instanceof HTMLInputElement)
@@ -82,6 +109,11 @@ const CommandList = () => {
     if (event.ctrlKey && event.key.toLowerCase() === 'c') handleCopy();
     else if (event.ctrlKey && event.key.toLowerCase() === 'v') handlePaste();
     else if (event.key === "Delete") handleDelete();
+    else if (event.ctrlKey && event.key.toLowerCase() == "enter") handleRunCommand();
+
+    // Arrow movement
+    else if (event.key.toLowerCase() == "arrowdown") handleArrowDown();
+    else if (event.key.toLowerCase() == "arrowup") handleArrowUp();
 
   }, [handleCopy, handlePaste, handleDelete]);
 
