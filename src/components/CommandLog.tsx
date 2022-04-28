@@ -4,7 +4,8 @@ import { Command } from '../store/slices/command';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
-    height: "100%",
+    flexGrow: 1,
+    flexBasis: 30,
     overflow: "auto",
   },
   message: {

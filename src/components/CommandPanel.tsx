@@ -35,7 +35,9 @@ const useStyles = createAppUseStyles(theme => ({
     borderBottom: [2, "solid", theme.palette.primary.main],
   },
   body: {
-    // overflow: "auto"
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
   }
 }));
 

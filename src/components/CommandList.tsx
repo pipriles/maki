@@ -85,7 +85,7 @@ const CommandList = () => {
       ? commands.findIndex(command => command.id === currentCommand.id)
       : -1
 
-    const nextCommand = commands[index+1];
+    const nextCommand = index < commands.length-1 ? commands[index+1] : commands[0];
     dispatch(changeCurrentCommand(nextCommand?.id))
 
   }, [dispatch, currentCommand]);
