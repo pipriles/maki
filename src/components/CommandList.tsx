@@ -24,9 +24,11 @@ import {
 
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
+import ContextMenuDivider from './ContextMenuDivider';
 import CommandStep from './CommandStep';
 
 import { useContextMenu } from './utils';
+import { runSingleCommandById } from '../proxy';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -135,6 +137,11 @@ const CommandList = () => {
     }
   };
 
+  const onCommandRun = () => {
+    if (contextMenu?.command)
+      runSingleCommandById(contextMenu.command)
+  };
+
   return (
     <div className={styles.root}>
       <DndContext 
@@ -156,9 +163,11 @@ const CommandList = () => {
       <ContextMenu 
         open={contextMenu?.command !== undefined} 
         position={contextMenu}>
-        <ContextMenuItem label={"Copy"} tooltip={"Ctrl + C"} onClick={onCommandCopy} />
-        <ContextMenuItem label={"Paste"} tooltip={"Ctrl + V"} onClick={onCommandPaste} />
+        <ContextMenuItem label={"Copy"} tooltip={"Ctrl + C"} onClick={onCommandCopy}/>
+        <ContextMenuItem label={"Paste"} tooltip={"Ctrl + V"} onClick={onCommandPaste}/>
         <ContextMenuItem label={"Delete"} tooltip={"Del"} onClick={onCommandDelete}/>
+        <ContextMenuDivider />
+        <ContextMenuItem label={"Run command"} tooltip={"Ctrl + Enter"} onClick={onCommandRun}/>
       </ContextMenu>
     </div>
   )
