@@ -34,7 +34,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Show errors on UI
 - [x] Add command autocomplete
 - [x] Add preview result
-- [ ] Add way to run single command
+- [x] Add way to run single command
 - [ ] Add export feature
 - [ ] Improve select element on document
 - [ ] Show matches count
