@@ -4,7 +4,7 @@ import { createAppUseStyles } from '../styles'
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
-    padding: theme.spacing(1)
+    display: "flex",
   },
   message: {
     cursor: 'default',

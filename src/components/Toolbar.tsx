@@ -1,6 +1,7 @@
 import React from 'react';
 import { batch } from 'react-redux';
-import { BiPlay, BiPause, BiStop } from 'react-icons/bi';
+import { BiPlay, BiPause, BiStop, BiDotsVertical, BiExport } from 'react-icons/bi';
+import { AiOutlineExport } from 'react-icons/ai';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { commandSelectors } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
@@ -16,7 +17,6 @@ const useStyles = createAppUseStyles(theme => ({
   },
   playback: {
     display: "flex",
-    borderTop: [1, "solid", theme.lighten(theme.palette.background, 0.5)],
   },
   button: {
     background: "none",
@@ -31,6 +31,20 @@ const useStyles = createAppUseStyles(theme => ({
     '&:hover': {
       color: theme.palette.primary.main,
     },
+  },
+  above: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: [theme.spacing(0.25), theme.spacing(1)],
+  },
+  below: {
+    borderTop: [1, "solid", theme.lighten(theme.palette.background, 0.5)],
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  options: {
+    display: "flex",
   }
 }));
 
@@ -57,19 +71,32 @@ const Toolbar = () => {
     });
   };
 
+  const onClickExport = () => {
+    // Open export file
+  };
+
   return (
     <div className={styles.root}>
-      <CurrentTab />
-      <div className={styles.playback}>
-        <button className={styles.button} onClick={onRecipePlay}>
-          <BiPlay />
-        </button>
-        <button className={styles.button} onClick={onRecipePause}>
-          <BiPause />
-        </button>
-        <button className={styles.button} onClick={onRecipeStop}>
-          <BiStop />
-        </button>
+      <div className={styles.above}>
+        <CurrentTab />
+        <div className={styles.options}>
+          <button className={styles.button} onClick={onClickExport}>
+            <AiOutlineExport />
+          </button>
+        </div>
+      </div>
+      <div className={styles.below}>
+        <div className={styles.playback}>
+          <button className={styles.button} onClick={onRecipePlay}>
+            <BiPlay />
+          </button>
+          <button className={styles.button} onClick={onRecipePause}>
+            <BiPause />
+          </button>
+          <button className={styles.button} onClick={onRecipeStop}>
+            <BiStop />
+          </button>
+        </div>
       </div>
     </div>
   );

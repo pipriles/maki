@@ -36,6 +36,8 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add preview result
 - [x] Add way to run single command
 - [ ] Add export feature
+- [ ] Redesign commnad parameters to be only on one component
+- [ ] Change Command Panel to be Recipe panel
 - [ ] Improve select element on document
 - [ ] Show matches count
 - [ ] Implement ability detect a selector shared in multiple elements
