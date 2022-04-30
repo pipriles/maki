@@ -117,7 +117,7 @@ const CommandPanel = () => {
       >
         <div className={styles.inner}>
           <PanelTabs value={currentTab} onChange={handleChange}>
-            <span>Command</span>
+            <span>Recipe</span>
             <span>Output</span>
             <span>Log</span>
           </PanelTabs>
