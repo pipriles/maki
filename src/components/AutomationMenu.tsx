@@ -3,8 +3,8 @@ import { createAppUseStyles } from '../styles';
 
 import Toolbar from './Toolbar';
 import CommandList from './CommandList';
+import RecipePanel from './RecipePanel';
 import CommandPanel from './CommandPanel';
-import CommandParametersComponent from './CommandParameters';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -33,9 +33,9 @@ const AutomationMenu = () => {
       <div className={styles.body}>
         <div className={styles.inner}>
           <CommandList />
-          <CommandPanel />
+          <RecipePanel />
         </div>
-        <CommandParametersComponent />
+        <CommandPanel />
       </div>
     </div>
   );

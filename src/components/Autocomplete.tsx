@@ -15,7 +15,7 @@ const useStyles = createAppUseStyles(theme => ({
     maxHeight: 200,
     overflow: "auto",
     zIndex: 99,
-    bottom: "100%",
+    // bottom: "100%",
     width: "100%",
     boxShadow: "0 0 15px -10px black",
   },
@@ -34,12 +34,19 @@ const useStyles = createAppUseStyles(theme => ({
 
 interface AutocompleteProps {
   value: string;
+  placeholder?: string;
   options: string[];
   onChange: (value: string) => void;
   className?: string;
 }
 
-const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps) => {
+const Autocomplete = ({ 
+  value, 
+  placeholder, 
+  options, 
+  onChange, 
+  className 
+}: AutocompleteProps) => {
 
   const styles = useStyles();
 
@@ -134,6 +141,7 @@ const Autocomplete = ({ value, options, onChange, className }: AutocompleteProps
       <input 
         className={className} 
         value={value}
+        placeholder={placeholder}
         onChange={onInputChange}
         onFocus={handleFocus}
         onBlur={handleBlur}
