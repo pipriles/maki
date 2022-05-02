@@ -6,7 +6,7 @@ import { createAppUseStyles } from '../styles';
 
 import RecipeInput from './RecipeInput';
 import CommandLog from './CommandLog';
-import CommandOutput from './CommandOutput';
+import RecipeOutput from './RecipeOutput';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -126,7 +126,7 @@ const CommandPanel = () => {
           </PanelTabs>
           <PanelBody value={currentTab}>
             <RecipeInput recipe={currentRecipe} />
-            {currentCommand && <CommandOutput command={currentCommand} />}
+            <RecipeOutput />
             {currentCommand && <CommandLog command={currentCommand} /> }
           </PanelBody>
         </div>

@@ -28,3 +28,16 @@ export const getCurrentRecipe = createSelector(
     }
   }
 );
+
+export const getRecipeResults = createSelector(
+  [getCurrentRecipe, selectCommands],
+  (recipe, commands) => {
+    if (recipe === undefined) return;
+    const recipeCommands = recipe.commands.map(id => commands.entities[id]);
+    const result = recipeCommands
+      .filter(command => command && command.field)
+      .map(command => [command?.field, command?.commandResult])
+    console.log(result);
+    return result;
+  }
+);

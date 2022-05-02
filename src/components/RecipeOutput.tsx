@@ -1,6 +1,7 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
-import { Command } from '../store/slices/command';
+import { useAppSelector } from '../store/hooks';
+import { getRecipeResults } from '../store/selectors';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -15,22 +16,20 @@ const useStyles = createAppUseStyles(theme => ({
   }
 }));
 
-interface CommandOutputProps {
-  command: Command;
-};
-
-const CommandOutput = ({ command }: CommandOutputProps) => {
+const RecipeOutput = () => {
 
   const styles = useStyles();
-  const commandResult = JSON.stringify(command.commandResult, null, 2);
+  const results = useAppSelector(getRecipeResults);
+
+  const recipeResult = JSON.stringify(results, null, 2);
 
   return (
     <div className={styles.root}>
       <pre className={styles.pre}>
-        {commandResult}
+        {recipeResult}
       </pre>
     </div>
   );
 };
 
-export default CommandOutput;
+export default RecipeOutput;
