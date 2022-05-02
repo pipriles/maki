@@ -11,9 +11,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 import COMMANDS from '../defaults/commands.json';
 
-interface Recipe {
+export interface Recipe {
   id: string;
   name: string;
+  description: string;
   executionSpeed: number;
   commands: Command['id'][];
   recipeLog: string[];
@@ -24,6 +25,7 @@ export const recipeAdapter = createEntityAdapter<Recipe>();
 const recipeFactory = (merge?: Partial<Recipe>): Recipe => ({
   id: uuidv4(),
   name: "Recipe",
+  description: "",
   executionSpeed: 500,
   commands: [],
   recipeLog: [],
@@ -33,6 +35,7 @@ const recipeFactory = (merge?: Partial<Recipe>): Recipe => ({
 const initialState: EntityState<Recipe> = {
   entities: {
     "1": recipeFactory({
+      id: "1",
       commands: COMMANDS.map(command => command.id)
     })
   },

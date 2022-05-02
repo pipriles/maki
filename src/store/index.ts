@@ -14,6 +14,8 @@ export const store = configureStore({
   }
 });
 
+console.log(store.getState());
+
 export const select = <T>(selector: Selector<RootState, T>): T => {
   const state = store.getState();
   return selector(state);

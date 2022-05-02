@@ -1,10 +1,10 @@
 import React from 'react';
 import { Resizable } from 're-resizable';
 import { useAppSelector, } from '../store/hooks';
-import { getCurrentCommand } from '../store/selectors';
+import { getCurrentCommand, getCurrentRecipe } from '../store/selectors';
 import { createAppUseStyles } from '../styles';
 
-import CommandInput from './CommandInput';
+import RecipeInput from './RecipeInput';
 import CommandLog from './CommandLog';
 import CommandOutput from './CommandOutput';
 
@@ -97,11 +97,14 @@ const PanelBody = ({ value, children }: PanelBodyProps) => {
 const CommandPanel = () => {
 
   const styles = useStyles();
-  const command = useAppSelector(getCurrentCommand);
+  const currentCommand = useAppSelector(getCurrentCommand);
+  const currentRecipe = useAppSelector(getCurrentRecipe);
   const [currentTab, setCurrentTab] = React.useState(0);
 
-  if (command === undefined)
-    return null;
+  console.log(currentRecipe);
+
+  if (currentRecipe === undefined)
+    return null
 
   const handleChange = (value: number) => {
     setCurrentTab(value)
@@ -122,9 +125,9 @@ const CommandPanel = () => {
             <span>Log</span>
           </PanelTabs>
           <PanelBody value={currentTab}>
-            <CommandInput command={command} />
-            <CommandOutput command={command} />
-            <CommandLog command={command} />
+            <RecipeInput recipe={currentRecipe} />
+            {currentCommand && <CommandOutput command={currentCommand} />}
+            {currentCommand && <CommandLog command={currentCommand} /> }
           </PanelBody>
         </div>
       </Resizable>
