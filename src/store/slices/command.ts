@@ -28,6 +28,7 @@ export interface CommandParameters {
 
 export interface Command {
   id: string;
+  recipeId: string;
   commandType: string;
   description: string;
   parameters: CommandParameters;
@@ -37,7 +38,8 @@ export interface Command {
   field: string;
 }
 
-export interface CommandPayload extends Omit<Partial<Command>, 'parameters'> { 
+export interface CommandPayload extends Omit<Partial<Command>, 'parameters' | 'recipeId'> { 
+  recipeId: string;
   parameters?: Partial<CommandParameters>
 }
 
@@ -69,6 +71,7 @@ const initialState: EntityState<Command> = {
 
 export const commandFactory = (): Command => ({
   id: uuidv4(),
+  recipeId: "",
   commandType: "",
   description: "",
   parameters: { ...defaultParameters },
@@ -80,7 +83,7 @@ const createNewCommand = (payload?: CommandPayload): Command => {
   return mergeCommand(defaultCommand, payload);
 };
 
-const mergeCommand = (command: Command, payload?: CommandPayload): Command => {
+const mergeCommand = (command: Command, payload?: Partial<CommandPayload>): Command => {
   const parameters = { ...command.parameters, ...payload?.parameters };
   return { ...command, ...payload, parameters: parameters };
 };
@@ -90,11 +93,11 @@ export const commandSlice = createSlice({
   initialState: commandsAdapter.getInitialState(initialState),
   reducers: {
     removeCommand: commandsAdapter.removeOne,
-    addCommand: (state, action: PayloadAction<Partial<Command> | undefined>) => {
+    addCommand: (state, action: PayloadAction<CommandPayload>) => {
       const command = createNewCommand(action.payload);
       return commandsAdapter.addOne(state, command)
     },
-    changeCommand: (state, action: PayloadAction<CommandPayload>) => {
+    changeCommand: (state, action: PayloadAction<Partial<CommandPayload>>) => {
       const commandId = action.payload.id;
       if (!commandId) return;
 
@@ -139,23 +142,6 @@ export const commandSlice = createSlice({
           command.commandStatus = undefined
       });
     },
-    commandLogMessage: (
-      state, 
-      action: PayloadAction<{ commandId: Command['id'], message: string }>) => {
-        const { commandId, message } = action.payload;
-        const command = state.entities[commandId];
-        if (!command) return;
-        command.commandLogger = command.commandLogger 
-          ? [ message, ...command.commandLogger ]
-          : [ message ] ;
-      },
-    clearLogMessages: (state) => {
-      state.ids.forEach(commandId => {
-        const command = state.entities[commandId];
-        if (command !== undefined) 
-          command.commandLogger = [];
-      })
-    }
   }
 });
 
@@ -166,8 +152,6 @@ export const {
   createCommandCopy,
   moveCommand,
   resetAllCommandStatus,
-  commandLogMessage,
-  clearLogMessages,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

@@ -50,3 +50,5 @@ export const hasOwnProperty = <
 export const isPropertyOf = <X extends {}>(key: PropertyKey, obj: X): key is keyof X => {
   return obj.hasOwnProperty(key);
 }
+
+export const isTruthy = <T>(x: T | false | undefined | null | "" | 0): x is T => !!x;

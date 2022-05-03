@@ -1,6 +1,6 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
-import { Command } from '../store/slices/command';
+import { Recipe } from '../store/slices/recipe';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -18,16 +18,16 @@ const useStyles = createAppUseStyles(theme => ({
   }
 }));
 
-interface CommandLogProps {
-  command: Command;
+interface RecipeLogProps {
+  recipe: Recipe;
 }
 
-const CommandLog = ({ command }: CommandLogProps) => {
+const RecipeLog = ({ recipe }: RecipeLogProps) => {
 
   const styles = useStyles();
 
-  const commandLogger = command.commandLogger ?? []
-  const messages = commandLogger.map((msg, index) => (
+  const recipeLogger = recipe.recipeLog ?? []
+  const messages = recipeLogger.map((msg, index) => (
     <span className={styles.message} key={index}>
       {msg}
     </span>
@@ -40,4 +40,4 @@ const CommandLog = ({ command }: CommandLogProps) => {
   )
 };
 
-export default CommandLog;
+export default RecipeLog;

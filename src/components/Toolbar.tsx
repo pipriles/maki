@@ -3,9 +3,10 @@ import { batch } from 'react-redux';
 import { BiPlay, BiPause, BiStop, BiDotsVertical, BiExport } from 'react-icons/bi';
 import { AiOutlineExport } from 'react-icons/ai';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { commandSelectors } from '../store/selectors';
+import { getCurrentRecipe, commandSelectors } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
-import { resetAllCommandStatus, clearLogMessages } from '../store/slices/command';
+import { resetAllCommandStatus } from '../store/slices/command';
+import { clearMessages } from '../store/slices/recipe';
 import { createAppUseStyles } from '../styles';
 import { runCommands } from '../proxy'
 
@@ -52,11 +53,13 @@ const Toolbar = () => {
 
   const styles = useStyles();
   const dispatch = useAppDispatch();
+  const currentRecipe = useAppSelector(getCurrentRecipe);
   const commands = useAppSelector(commandSelectors.selectAll);
 
   const onRecipePlay = () => {
     console.log('Start scraping!');
-    runCommands(commands);
+    if (currentRecipe !== undefined)
+      runCommands(currentRecipe);
   };
 
   const onRecipePause = () => {
@@ -67,7 +70,7 @@ const Toolbar = () => {
     batch(() => {
       dispatch(changeRunningState(false));
       dispatch(resetAllCommandStatus());
-      dispatch(clearLogMessages());
+      currentRecipe && dispatch(clearMessages(currentRecipe.id));
     });
   };
 

@@ -1,6 +1,7 @@
 [
   {
     "id": "1",
+    "recipeId": "1",
     "commandType": "EXTRACT_TEXT",
     "description": "",
     "field": "",
@@ -25,6 +26,7 @@
   },
   {
     "id": "2",
+    "recipeId": "1",
     "commandType": "CLICK",
     "description": "",
     "field": "",
@@ -49,6 +51,7 @@
   },
   {
     "id": "3",
+    "recipeId": "1",
     "commandType": "EXTRACT_ATTRIBUTE",
     "description": "",
     "field": "",
@@ -73,6 +76,7 @@
   },
   {
     "id": "4",
+    "recipeId": "1",
     "commandType": "OPEN",
     "description": "",
     "field": "",
@@ -97,6 +101,7 @@
   },
   {
     "id": "5",
+    "recipeId": "1",
     "commandType": "CLICK",
     "description": "",
     "field": "",
@@ -121,6 +126,7 @@
   },
   {
     "id": "6",
+    "recipeId": "1",
     "commandType": "WAIT_FOR_ELEMENT_PRESENT",
     "description": "",
     "field": "",

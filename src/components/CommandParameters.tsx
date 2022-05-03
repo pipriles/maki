@@ -1,5 +1,4 @@
 import React from 'react';
-import { Resizable } from 're-resizable';
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand } from '../store/selectors';
@@ -37,7 +36,7 @@ const CommandParametersComponent = () => {
   ) => (
     payload: Partial<CommandParameters[typeof parameterType]>
   ) => {
-    const updated: CommandPayload = { 
+    const updated: Partial<CommandPayload> = { 
       id: currentCommand.id, 
       parameters: {
         [parameterType]: payload 
