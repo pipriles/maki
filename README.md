@@ -35,9 +35,9 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add command autocomplete
 - [x] Add preview result
 - [x] Add way to run single command
-- [ ] Add recipes to Redux state
-- [ ] Change Command Panel to be Recipe panel
-- [ ] Create default test recipe
+- [x] Add recipes to Redux state
+- [x] Change Command Panel to be Recipe panel
+- [x] Create default test recipe
 - [ ] Add export feature
 - [ ] Redesign commnad parameters to be only on one component
 - [ ] Improve select element on document
