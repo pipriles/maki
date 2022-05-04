@@ -18,11 +18,13 @@ import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
 import { 
   getCurrentCommand, 
   getCurrentRecipe, 
-  getCurrentRecipeCommands 
+  getCurrentRecipeCommands,
+  getCommandCopied,
 } from '../store/selectors';
 import { 
-  commandFactory, 
-  createCommandCopy, 
+  commandFactory,
+  createCommandCopy,
+  insertCommand,
   removeCommand, 
   moveCommand 
 } from '../store/slices/command';
@@ -51,10 +53,7 @@ const CommandList = () => {
   const currentRecipe = useAppSelector(getCurrentRecipe);
   const commands = useAppSelector(getCurrentRecipeCommands)
   const currentCommand = useAppSelector(getCurrentCommand)
-  const commandCopied = useAppSelector(state => state.ui.commandCopied);
-
-  const fakeCommand = commandFactory();
-  const commandSteps = [ ...commands, fakeCommand ];
+  const commandCopied = useAppSelector(getCommandCopied);
 
   const commandIds = currentRecipe?.commands ?? [];
 
@@ -65,8 +64,8 @@ const CommandList = () => {
   const handlePaste = React.useCallback(() => {
     const currentCommandIndex = commands.findIndex(command => command.id === currentCommand?.id);
     const index = currentCommandIndex !== -1 ? currentCommandIndex : commands.length - 1;
-    const payload = { commandId: commandCopied, index };
-    dispatch(createCommandCopy(payload));
+    const copy = createCommandCopy(commandCopied);
+    dispatch(insertCommand(index, copy));
   }, [dispatch, commands, currentCommand, commandCopied]);
 
   const handleDelete = React.useCallback(() => {
@@ -144,9 +143,16 @@ const CommandList = () => {
     };
   }
 
-  const renderCommands = commandSteps.map(
+  const renderCommands = commands.map(
     (command, index) => <CommandStep command={command} index={index} key={command.id} />
   );
+
+  if (currentRecipe !== undefined) {
+    const fakeCommand = commandFactory(currentRecipe.id);
+    renderCommands.push(
+      <CommandStep command={fakeCommand} index={renderCommands.length} key={fakeCommand.id} />
+    );
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -171,8 +177,8 @@ const CommandList = () => {
   const onCommandPaste = () => {
     if (contextMenu?.command) {
       const index = commandIds.indexOf(contextMenu.command);
-      const payload = { commandId: commandCopied, index };
-      dispatch(createCommandCopy(payload))
+      const copy = createCommandCopy(commandCopied)
+      dispatch(insertCommand(index, copy))
     }
   };
 

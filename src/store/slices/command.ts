@@ -31,18 +31,19 @@ const initialState: EntityState<Command> = {
   ids: COMMANDS.map(command => command.id)
 } 
 
-export const commandFactory = (): Command => ({
+export const commandFactory = (recipeId?: string): Command => ({
   id: uuidv4(),
-  recipeId: "",
+  recipeId: recipeId ?? "",
   commandType: "",
   description: "",
   parameters: { ...defaultParameters },
   field: "",
 });
 
-export const createNewCommand = (payload?: CommandPayload): Command => {
+export const createCommandCopy = (payload?: CommandPayload): Command => {
   const defaultCommand = commandFactory();
-  return mergeCommand(defaultCommand, payload);
+  const merged = mergeCommand(defaultCommand, payload);
+  return { ...merged, id: defaultCommand.id };
 };
 
 const mergeCommand = (command: Command, payload?: Partial<CommandPayload>): Command => {
@@ -55,13 +56,7 @@ export const commandSlice = createSlice({
   initialState: commandsAdapter.getInitialState(initialState),
   reducers: {
     removeCommand: commandsAdapter.removeOne,
-    addCommand: {
-      reducer: commandsAdapter.addOne,
-      prepare: (command: CommandPayload) => {
-        const payload = createNewCommand(command);
-        return { payload };
-      },
-    },
+    addCommand: commandsAdapter.addOne,
     changeCommand: (state, action: PayloadAction<Partial<CommandPayload>>) => {
       const commandId = action.payload.id;
       if (!commandId) return;
@@ -78,29 +73,10 @@ export const commandSlice = createSlice({
         state.ids.pop();
         state.ids.splice(index, 0, command.id);
       },
-      prepare: (index: number) => {
-        const command = createNewCommand();
+      prepare: (index: number, payload?: CommandPayload) => {
+        const command = createCommandCopy(payload);
         return  { payload: { command, index } };
       }
-    },
-    createCommandCopy: (
-      state, 
-      action: PayloadAction<{ commandId?: Command['id'], index?: number }>
-    ) => {
-      const { commandId, index } = action.payload; 
-      if (!commandId) return;
-
-      const command = state.entities[commandId];
-      if (!command) return;
-
-      const { id, ...payload } = command;
-      const copy = createNewCommand(payload)
-
-      const p = index === undefined ? state.ids.indexOf(commandId) : index;
-
-      commandsAdapter.addOne(state, copy);
-      state.ids.pop();
-      state.ids.splice(p+1, 0, copy.id);
     },
     moveCommand: (state, action: PayloadAction<{ oldIndex: number, newIndex: number }>) => {
       const { oldIndex, newIndex } = action.payload;
@@ -119,8 +95,8 @@ export const commandSlice = createSlice({
 export const { 
   addCommand, 
   removeCommand, 
+  insertCommand,
   changeCommand, 
-  createCommandCopy,
   moveCommand,
   resetAllCommandStatus,
 } = commandSlice.actions;

@@ -64,3 +64,13 @@ export const getCurrentRecipeCommands = createSelector(
     return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
   }
 )
+
+export const getCommandCopied = createSelector(
+  [selectUi, selectCommands],
+  (ui, commands) => {
+    if (ui.commandCopied !== undefined) {
+      const command = commands.entities[ui.commandCopied];
+      return command;
+    }
+  }
+);
