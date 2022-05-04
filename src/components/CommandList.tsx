@@ -26,8 +26,9 @@ import {
   createCommandCopy,
   insertCommand,
   removeCommand, 
-  moveCommand 
 } from '../store/slices/command';
+
+import { moveCommand } from '../store/slices/recipe';
 
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
@@ -55,17 +56,24 @@ const CommandList = () => {
   const currentCommand = useAppSelector(getCurrentCommand)
   const commandCopied = useAppSelector(getCommandCopied);
 
-  const commandIds = currentRecipe?.commands ?? [];
+  if (currentRecipe === undefined)
+    return null;
+
+  const commandIds = currentRecipe.commands ?? [];
 
   const handleCopy = React.useCallback(() => {
     dispatch(copyCommand(currentCommand?.id));
   }, [dispatch, currentCommand]);
 
   const handlePaste = React.useCallback(() => {
+    if (commandCopied === undefined) return;
+
     const currentCommandIndex = commands.findIndex(command => command.id === currentCommand?.id);
     const index = currentCommandIndex !== -1 ? currentCommandIndex : commands.length - 1;
     const copy = createCommandCopy(commandCopied);
+
     dispatch(insertCommand(index, copy));
+
   }, [dispatch, commands, currentCommand, commandCopied]);
 
   const handleDelete = React.useCallback(() => {
@@ -138,7 +146,7 @@ const CommandList = () => {
     if (active && over && active.id !== over.id) {
       const oldIndex = commandIds.indexOf(active.id);
       const newIndex = commandIds.indexOf(over.id);
-      const payload = { newIndex, oldIndex };
+      const payload = { recipeId: currentRecipe.id, newIndex, oldIndex };
       dispatch(moveCommand(payload));
     };
   }
@@ -175,10 +183,10 @@ const CommandList = () => {
   };
 
   const onCommandPaste = () => {
-    if (contextMenu?.command) {
+    if (contextMenu?.command && commandCopied) {
       const index = commandIds.indexOf(contextMenu.command);
       const copy = createCommandCopy(commandCopied)
-      dispatch(insertCommand(index, copy))
+      dispatch(insertCommand(index+1, copy))
     }
   };
 

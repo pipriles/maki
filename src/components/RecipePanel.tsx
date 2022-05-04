@@ -100,8 +100,6 @@ const CommandPanel = () => {
   const currentRecipe = useAppSelector(getCurrentRecipe);
   const [currentTab, setCurrentTab] = React.useState(0);
 
-  console.log(currentRecipe);
-
   if (currentRecipe === undefined)
     return null
 

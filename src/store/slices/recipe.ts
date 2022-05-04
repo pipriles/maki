@@ -1,13 +1,9 @@
-import { 
-  createSlice, 
-  PayloadAction, 
-  Update, 
-  createEntityAdapter, 
-  EntityState 
-} from '@reduxjs/toolkit';
-
+import { createSlice, PayloadAction, createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+import { arrayMove } from '@dnd-kit/sortable';
 import { v4 as uuidv4 } from 'uuid';
+
 import { Recipe } from '../../models';
+import { addCommand, removeCommand, insertCommand } from './command';
 
 import COMMANDS from '../defaults/commands.json';
 
@@ -50,17 +46,60 @@ export const recipeSlice = createSlice({
         return state;
 
       const changes = { recipeLog: [ message, ...recipe.recipeLog ] };
-      const update: Update<Recipe> = { id: recipeId, changes };
+      const update = { id: recipeId, changes };
       return recipeAdapter.updateOne(state, update);
     },
     clearMessages: (state, action: PayloadAction<Recipe['id']>) => {
       const recipeId = action.payload;
       const change = { id: recipeId, changes: { recipeLog: [] } }
       return recipeAdapter.updateOne(state, change);
-    }
+    },
+    moveCommand: (
+      state, 
+      action: PayloadAction<{ recipeId: Recipe['id'], oldIndex: number, newIndex: number }>
+    ) => {
+      const { recipeId, oldIndex, newIndex } = action.payload;
+      const recipe = state.entities[recipeId];
+
+      if (recipe !== undefined) {
+        const commands = recipe.commands;
+        recipe.commands = arrayMove(commands, oldIndex, newIndex); 
+      }
+    },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(addCommand, (state, action) => {
+        const { id, recipeId } = action.payload;
+        const recipe = state.entities[recipeId];
+
+        if (recipe !== undefined)
+          recipe.commands = [ ...recipe.commands, id ]
+      })
+      .addCase(removeCommand, (state, action) => {
+        const commandId = action.payload;
+        state.ids.forEach(recipeId => {
+          const recipe = state.entities[recipeId];
+          if (recipe !== undefined)
+            recipe.commands = recipe.commands.filter(id => id !== commandId);
+        });
+      })
+      .addCase(insertCommand, (state, action) => {
+        const { index, command } = action.payload;
+        const recipe = state.entities[command.recipeId];
+
+        if (recipe !== undefined)
+          recipe.commands.splice(index, 0, command.id);
+      });
+  }
 });
 
-export const { addRecipe, changeRecipe, pushMessage, clearMessages, } = recipeSlice.actions;
+export const { 
+  addRecipe, 
+  changeRecipe, 
+  pushMessage, 
+  clearMessages, 
+  moveCommand 
+} = recipeSlice.actions;
 
 export default recipeSlice.reducer;
