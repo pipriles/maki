@@ -1,7 +1,7 @@
 import browser from 'webextension-polyfill';
 import { finder } from '@medv/finder';
-import { Command } from './store/slices/command';
-import { Locator, Executor, Message, makeResponse, makeErrorResponse, Payload } from './common/utils';
+import { Command, Locator, Executor, Message, Payload } from './models';
+import { makeResponse, makeErrorResponse } from './common/utils';
 
 console.log('Listening to commands...');
 

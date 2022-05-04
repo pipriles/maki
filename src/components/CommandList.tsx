@@ -8,19 +8,27 @@ import {
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core';
+
 import { SortableContext, verticalListSortingStrategy, } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, } from '@dnd-kit/modifiers'
 
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
-import { commandSelectors, getCurrentCommand } from '../store/selectors';
 import { 
-  commandFactory, 
-  createCommandCopy, 
+  getCurrentCommand, 
+  getCurrentRecipe, 
+  getCurrentRecipeCommands,
+  getCommandCopied,
+} from '../store/selectors';
+import { 
+  commandFactory,
+  createCommandCopy,
+  insertCommand,
   removeCommand, 
-  moveCommand 
 } from '../store/slices/command';
+
+import { moveCommand } from '../store/slices/recipe';
 
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
@@ -43,23 +51,29 @@ const CommandList = () => {
 
   const styles = useStyles();
   const dispatch = useAppDispatch();
-  const commandIds = useAppSelector(commandSelectors.selectIds);
-  const commands = useAppSelector(commandSelectors.selectAll)
+  const currentRecipe = useAppSelector(getCurrentRecipe);
+  const commands = useAppSelector(getCurrentRecipeCommands)
   const currentCommand = useAppSelector(getCurrentCommand)
-  const commandCopied = useAppSelector(state => state.ui.commandCopied);
+  const commandCopied = useAppSelector(getCommandCopied);
 
-  const fakeCommand = commandFactory();
-  const commandSteps = [ ...commands, fakeCommand ];
+  if (currentRecipe === undefined)
+    return null;
+
+  const commandIds = currentRecipe.commands ?? [];
 
   const handleCopy = React.useCallback(() => {
     dispatch(copyCommand(currentCommand?.id));
   }, [dispatch, currentCommand]);
 
   const handlePaste = React.useCallback(() => {
+    if (commandCopied === undefined) return;
+
     const currentCommandIndex = commands.findIndex(command => command.id === currentCommand?.id);
     const index = currentCommandIndex !== -1 ? currentCommandIndex : commands.length - 1;
-    const payload = { commandId: commandCopied, index };
-    dispatch(createCommandCopy(payload));
+    const copy = createCommandCopy(commandCopied);
+
+    dispatch(insertCommand(index, copy));
+
   }, [dispatch, commands, currentCommand, commandCopied]);
 
   const handleDelete = React.useCallback(() => {
@@ -85,7 +99,7 @@ const CommandList = () => {
       ? commands.findIndex(command => command.id === currentCommand.id)
       : -1
 
-    const nextCommand = commands[index+1];
+    const nextCommand = index < commands.length-1 ? commands[index+1] : commands[0];
     dispatch(changeCurrentCommand(nextCommand?.id))
 
   }, [dispatch, currentCommand]);
@@ -132,14 +146,21 @@ const CommandList = () => {
     if (active && over && active.id !== over.id) {
       const oldIndex = commandIds.indexOf(active.id);
       const newIndex = commandIds.indexOf(over.id);
-      const payload = { newIndex, oldIndex };
+      const payload = { recipeId: currentRecipe.id, newIndex, oldIndex };
       dispatch(moveCommand(payload));
     };
   }
 
-  const renderCommands = commandSteps.map(
+  const renderCommands = commands.map(
     (command, index) => <CommandStep command={command} index={index} key={command.id} />
   );
+
+  if (currentRecipe !== undefined) {
+    const fakeCommand = commandFactory(currentRecipe.id);
+    renderCommands.push(
+      <CommandStep command={fakeCommand} index={renderCommands.length} key={fakeCommand.id} />
+    );
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -162,10 +183,10 @@ const CommandList = () => {
   };
 
   const onCommandPaste = () => {
-    if (contextMenu?.command) {
+    if (contextMenu?.command && commandCopied) {
       const index = commandIds.indexOf(contextMenu.command);
-      const payload = { commandId: commandCopied, index };
-      dispatch(createCommandCopy(payload))
+      const copy = createCommandCopy(commandCopied)
+      dispatch(insertCommand(index+1, copy))
     }
   };
 

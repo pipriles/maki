@@ -1,18 +1,12 @@
 import browser from 'webextension-polyfill';
 
 import { store, select } from '../store';
-import { getActiveTab, commandSelectors } from '../store/selectors';
+import { getActiveTab, commandSelectors, getRecipeCommands } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
-import { Command, changeCommand, commandLogMessage } from '../store/slices/command';
-import { 
-  Message, 
-  Executor, 
-  Response, 
-  makeResponse, 
-  makeErrorResponse, 
-  delay, 
-  hasOwnProperty,
-} from '../common/utils';
+import { changeCommand } from '../store/slices/command';
+import { pushMessage } from '../store/slices/recipe';
+import { makeResponse, makeErrorResponse, delay, hasOwnProperty, } from '../common/utils';
+import { Command, Recipe, Message, Executor, Response } from '../models';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
@@ -85,8 +79,8 @@ const updateCommandResult = (id: Command['id'], commandResult: Command['commandR
   return store.dispatch(action);
 };
 
-const updateCommandLogger = (id: Command['id'], message: string) => {
-  const action = commandLogMessage({ commandId: id, message });
+const updateRecipeLog = (id: Recipe['id'], message: string) => {
+  const action = pushMessage({ recipeId: id, message });
   return store.dispatch(action);
 };
 
@@ -95,12 +89,12 @@ const reportCommandError = (command: Command, error: unknown) => {
   updateCommandStatus(command.id, 'error')
 
   if (typeof error === "string") {
-    updateCommandLogger(command.id, error);
+    updateRecipeLog(command.recipeId, error);
   } else if (error instanceof Error) {
-    updateCommandLogger(command.id, error.message);
+    updateRecipeLog(command.recipeId, error.message);
   } else if (hasOwnProperty(error, 'message')) {
     const msg = typeof error.message === 'string' ? error.message : '';
-    updateCommandLogger(command.id, msg);
+    updateRecipeLog(command.recipeId, msg);
   }
 }
 
@@ -143,11 +137,12 @@ export const runSingleCommand = async (command: Command) => {
   return true;
 };
 
-export const runCommands = async (commands: Command[]) => {
+export const runCommands = async (recipe: Recipe) => {
 
   const isRunning = select(state => state.app.running);
   if (isRunning) return;
 
+  const commands = select(state => getRecipeCommands(state, recipe.id));
   store.dispatch(changeRunningState(true));
 
   for (const cmd of commands) {

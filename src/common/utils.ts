@@ -1,35 +1,4 @@
-import browser from 'webextension-polyfill';
-import { Command } from '../store/slices/command';
-
-export interface Locator {
-  query: string;
-  queryType: string;
-  elementIndex?: number | null;
-};
-
-export interface CommandMessage {
-  type: 'COMMAND';
-  payload: Command;
-}
-
-export interface TabMessage {
-  type: 'TAB';
-  payload: browser.Tabs.Tab;
-}
-
-export interface LocatorMessage {
-  type: 'LOCATOR';
-}
-
-export type Message = CommandMessage | TabMessage | LocatorMessage;
-export type Payload = string | Record<string, string> | null;
-
-export interface Response {
-  type: 'SUCCESS' | 'ERROR';
-  payload: Payload;
-}
-
-export type Executor = (command: Command) => Promise<Payload>;
+import { Payload, Response } from '../models';
 
 export const makeResponse      = (payload: Payload): Response => ({ type: 'SUCCESS', payload });
 export const makeErrorResponse = (payload: Payload): Response => ({ type: 'ERROR'  , payload });
@@ -50,3 +19,5 @@ export const hasOwnProperty = <
 export const isPropertyOf = <X extends {}>(key: PropertyKey, obj: X): key is keyof X => {
   return obj.hasOwnProperty(key);
 }
+
+export const isTruthy = <T>(x: T | false | undefined | null | "" | 0): x is T => !!x;

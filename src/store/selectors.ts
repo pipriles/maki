@@ -1,12 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { commandsAdapter } from './slices/command';
+import { recipeAdapter } from './slices/recipe';
 import { RootState } from './';
+import { isTruthy } from '../common/utils';
 
+export const selectRecipes = (state: RootState) => state.recipes;
 export const selectCommands = (state: RootState) => state.commands;
 export const selectUi = (state: RootState) => state.ui;
 export const getActiveTab = (state: RootState) => state.app.activeTab;
 
 export const commandSelectors = commandsAdapter.getSelectors(selectCommands);
+export const recipeSelectors = recipeAdapter.getSelectors(selectRecipes);
 
 export const getCurrentCommand = createSelector(
   [commandSelectors.selectAll, selectUi], 
@@ -17,3 +21,56 @@ export const getCurrentCommand = createSelector(
   }
 );
 
+export const getCurrentRecipe = createSelector(
+  [recipeSelectors.selectAll, selectUi],
+  (recipes, ui) => {
+    if (ui.currentRecipe !== undefined) {
+      return recipes.find(recipe => recipe.id === ui.currentRecipe);
+    }
+  }
+);
+
+export const getRecipeResults = createSelector(
+  [getCurrentRecipe, selectCommands],
+  (recipe, commands) => {
+    if (recipe === undefined) return;
+    const recipeCommands = recipe.commands.map(id => commands.entities[id]);
+    const result = recipeCommands
+      .filter(command => command && command.field)
+      .map(command => [command?.field, command?.commandResult])
+    console.log(result);
+    return result;
+  }
+);
+
+export const getRecipeCommands = createSelector(
+  [
+    recipeSelectors.selectById,
+    selectCommands
+  ],
+  (recipe, commands) => {
+    const recipeCommands = recipe?.commands ?? [];
+    return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
+  }
+)
+
+export const getCurrentRecipeCommands = createSelector(
+  [
+    getCurrentRecipe,
+    selectCommands
+  ],
+  (recipe, commands) => {
+    const recipeCommands = recipe?.commands ?? [];
+    return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
+  }
+)
+
+export const getCommandCopied = createSelector(
+  [selectUi, selectCommands],
+  (ui, commands) => {
+    if (ui.commandCopied !== undefined) {
+      const command = commands.entities[ui.commandCopied];
+      return command;
+    }
+  }
+);

@@ -1,9 +1,9 @@
 import React from 'react';
-import { Resizable } from 're-resizable';
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand } from '../store/selectors';
-import { CommandPayload, CommandParameters, changeCommand } from '../store/slices/command';
+import { changeCommand } from '../store/slices/command';
+import { CommandPayload, CommandParameters } from '../models';
 import CommandTypes from '../constants/commandTypes.json';
 
 import CommandParameter from './CommandParameter';
@@ -11,12 +11,9 @@ import { isPropertyOf } from '../common/utils';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
-    borderLeft: [1, "solid", theme.lighten(theme.palette.background, 1)],
-  },
-  inner: {
-    padding: theme.spacing(2),
-    height: "100%",
-    overflow: "hidden",
+    paddingTop: 16,
+    marginTop: 16,
+    borderTop: [1, "solid", theme.lighten(theme.palette.background, 1)],
   },
   parameter: {
     marginBottom: theme.spacing(1),
@@ -40,7 +37,7 @@ const CommandParametersComponent = () => {
   ) => (
     payload: Partial<CommandParameters[typeof parameterType]>
   ) => {
-    const updated: CommandPayload = { 
+    const updated: Partial<CommandPayload> = { 
       id: currentCommand.id, 
       parameters: {
         [parameterType]: payload 
@@ -76,16 +73,7 @@ const CommandParametersComponent = () => {
 
   return (
     <div className={styles.root}>
-      <Resizable 
-        defaultSize={{ width: 256, height: "100%" }} 
-        enable={{ left: true }} 
-        minWidth={256} 
-        maxWidth={512}
-      >
-        <div className={styles.inner}>
-          {renderParameters}
-        </div>
-      </Resizable>
+      {renderParameters}
     </div>
   );
 };

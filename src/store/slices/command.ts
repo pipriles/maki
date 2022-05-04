@@ -1,45 +1,8 @@
 import { createSlice, PayloadAction, createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
-import { arrayMove } from '@dnd-kit/sortable';
+
+import { Command, CommandPayload, CommandParameters } from '../../models';
 import COMMANDS from '../defaults/commands.json';
-
-interface LocatorParameter {
-  query: string;
-  queryType: string;
-  elementIndex?: number | null;
-}
-
-interface CoordinatesParameter {
-  x?: number | null;
-  y?: number | null;
-}
-
-export interface CommandParameters {
-  locator: LocatorParameter;
-  text: string;
-  url: string;
-  timeout: number;
-  coordinates: CoordinatesParameter;
-  strip: boolean;
-  collection: boolean;
-  attribute: string;
-  regex: string;
-}
-
-export interface Command {
-  id: string;
-  commandType: string;
-  description: string;
-  parameters: CommandParameters;
-  commandStatus?: "running" | "done" | "error";
-  commandResult?: unknown;
-  commandLogger?: string[];
-  field: string;
-}
-
-export interface CommandPayload extends Omit<Partial<Command>, 'parameters'> { 
-  parameters?: Partial<CommandParameters>
-}
 
 const defaultParameters: CommandParameters = {
   "locator": {
@@ -67,20 +30,22 @@ const initialState: EntityState<Command> = {
   ids: COMMANDS.map(command => command.id)
 } 
 
-export const commandFactory = (): Command => ({
+export const commandFactory = (recipeId?: string): Command => ({
   id: uuidv4(),
+  recipeId: recipeId ?? "",
   commandType: "",
   description: "",
   parameters: { ...defaultParameters },
   field: "",
 });
 
-const createNewCommand = (payload?: CommandPayload): Command => {
+export const createCommandCopy = (payload: CommandPayload): Command => {
   const defaultCommand = commandFactory();
-  return mergeCommand(defaultCommand, payload);
+  const merged = mergeCommand(defaultCommand, payload);
+  return { ...merged, id: defaultCommand.id };
 };
 
-const mergeCommand = (command: Command, payload?: CommandPayload): Command => {
+const mergeCommand = (command: Command, payload?: Partial<CommandPayload>): Command => {
   const parameters = { ...command.parameters, ...payload?.parameters };
   return { ...command, ...payload, parameters: parameters };
 };
@@ -90,11 +55,8 @@ export const commandSlice = createSlice({
   initialState: commandsAdapter.getInitialState(initialState),
   reducers: {
     removeCommand: commandsAdapter.removeOne,
-    addCommand: (state, action: PayloadAction<Partial<Command> | undefined>) => {
-      const command = createNewCommand(action.payload);
-      return commandsAdapter.addOne(state, command)
-    },
-    changeCommand: (state, action: PayloadAction<CommandPayload>) => {
+    addCommand: commandsAdapter.addOne,
+    changeCommand: (state, action: PayloadAction<Partial<CommandPayload>>) => {
       const commandId = action.payload.id;
       if (!commandId) return;
 
@@ -103,34 +65,15 @@ export const commandSlice = createSlice({
 
       state.entities[commandId] = mergeCommand(command, action.payload);
     },
-    insertCommand: (state, action: PayloadAction<number>) => {
-      const command = createNewCommand();
-      commandsAdapter.addOne(state, command);
-      state.ids.pop();
-      state.ids.splice(action.payload, 0, command.id);
-    },
-    createCommandCopy: (
-      state, 
-      action: PayloadAction<{ commandId?: Command['id'], index?: number }>
-    ) => {
-      const { commandId, index } = action.payload; 
-      if (!commandId) return;
-
-      const command = state.entities[commandId];
-      if (!command) return;
-
-      const { id, ...payload } = command;
-      const copy = createNewCommand(payload)
-
-      const p = index === undefined ? state.ids.indexOf(commandId) : index;
-
-      commandsAdapter.addOne(state, copy);
-      state.ids.pop();
-      state.ids.splice(p+1, 0, copy.id);
-    },
-    moveCommand: (state, action: PayloadAction<{ oldIndex: number, newIndex: number }>) => {
-      const { oldIndex, newIndex } = action.payload;
-      state.ids = arrayMove(state.ids, oldIndex, newIndex); 
+    insertCommand: {
+      reducer: (state, action: PayloadAction<{ command: Command, index: number; }>) => {
+        const { command } = action.payload;
+        commandsAdapter.addOne(state, command);
+      },
+      prepare: (index: number, payload: CommandPayload) => {
+        const command = createCommandCopy(payload);
+        return  { payload: { command, index } };
+      }
     },
     resetAllCommandStatus: (state) => {
       state.ids.forEach(id => {
@@ -139,35 +82,15 @@ export const commandSlice = createSlice({
           command.commandStatus = undefined
       });
     },
-    commandLogMessage: (
-      state, 
-      action: PayloadAction<{ commandId: Command['id'], message: string }>) => {
-        const { commandId, message } = action.payload;
-        const command = state.entities[commandId];
-        if (!command) return;
-        command.commandLogger = command.commandLogger 
-          ? [ message, ...command.commandLogger ]
-          : [ message ] ;
-      },
-    clearLogMessages: (state) => {
-      state.ids.forEach(commandId => {
-        const command = state.entities[commandId];
-        if (command !== undefined) 
-          command.commandLogger = [];
-      })
-    }
-  }
+  },
 });
 
 export const { 
   addCommand, 
   removeCommand, 
+  insertCommand,
   changeCommand, 
-  createCommandCopy,
-  moveCommand,
   resetAllCommandStatus,
-  commandLogMessage,
-  clearLogMessages,
 } = commandSlice.actions;
 
 export default commandSlice.reducer;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommandParameters } from '../store/slices/command';
+import { CommandParameters } from '../models';
 import { setContextMenu } from '../store/slices/ui';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 

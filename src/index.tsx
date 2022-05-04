@@ -7,7 +7,7 @@ import { ThemeProvider } from 'react-jss';
 import { store } from './store';
 import { changeActiveTab } from './store/slices/app';
 import { createTheme } from './styles';
-import { Message } from './common/utils';
+import { Message } from './models';
 
 import App from './components/App';
 

@@ -1,19 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Command } from './command';
-
-interface ContextMenu {
-  command?: Command['id'];
-  left?: number;
-  top?: number;
-};
-
-export interface IUi {
-  currentCommand?: Command['id'];
-  commandCopied?: Command['id'];
-  contextMenu?: ContextMenu;
-}
+import { IUi } from '../../models';
 
 const initialState: IUi = {
+  currentRecipe: "1",
   currentCommand: undefined,
   commandCopied: undefined,
   contextMenu: undefined,
@@ -23,6 +12,9 @@ export const uiSlice = createSlice({
   name: 'ui',
   initialState,
   reducers: {
+    changeUi: (state: IUi, action: PayloadAction<Partial<IUi>>) => {
+      return { ...state, ...action.payload };
+    },
     changeCurrentCommand: (state: IUi, action: PayloadAction<IUi['currentCommand']>) => {
       return { ...state, currentCommand: action.payload };
     },
@@ -37,7 +29,7 @@ export const uiSlice = createSlice({
   }
 });
 
-export const { changeCurrentCommand, copyCommand, setContextMenu } = uiSlice.actions;
+export const { changeUi, changeCurrentCommand, copyCommand, setContextMenu } = uiSlice.actions;
 
 export default uiSlice.reducer;
 

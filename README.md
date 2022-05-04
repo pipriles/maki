@@ -35,12 +35,14 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add command autocomplete
 - [x] Add preview result
 - [x] Add way to run single command
+- [ ] Add recipes to Redux state
+- [ ] Change Command Panel to be Recipe panel
+- [ ] Create default test recipe
 - [ ] Add export feature
+- [ ] Redesign commnad parameters to be only on one component
 - [ ] Improve select element on document
 - [ ] Show matches count
 - [ ] Implement ability detect a selector shared in multiple elements
 - [ ] Highlight elements being selected by query
 - [ ] Show sample of data extracted below selector parameters
 - [ ] Make commands required to run and allow a command to run isolated
-- [ ] Add recipes to Redux state
-- [ ] Create default test recipe

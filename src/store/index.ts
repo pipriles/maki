@@ -1,11 +1,13 @@
 import { Selector, configureStore } from '@reduxjs/toolkit';
 
+import recipeReducer from './slices/recipe';
 import commandReducer from './slices/command';
 import appReducer from './slices/app';
 import uiReducer from './slices/ui';
 
 export const store = configureStore({
   reducer: {
+    recipes: recipeReducer,
     commands: commandReducer,
     app: appReducer,
     ui: uiReducer,
