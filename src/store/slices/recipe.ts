@@ -46,10 +46,7 @@ export const recipeSlice = createSlice({
   name: 'recipes',
   initialState: recipeAdapter.getInitialState(initialState),
   reducers: {
-    addRecipe: (state, action: PayloadAction<Partial<Recipe>>) => {
-      const recipe = recipeFactory(action.payload);
-      return recipeAdapter.addOne(state, recipe);
-    },
+    addRecipe: recipeAdapter.addOne,
     changeRecipe: recipeAdapter.updateOne,
     pushMessage: (
       state, 

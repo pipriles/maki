@@ -78,7 +78,7 @@ export const commandFactory = (): Command => ({
   field: "",
 });
 
-const createNewCommand = (payload?: CommandPayload): Command => {
+export const createNewCommand = (payload?: CommandPayload): Command => {
   const defaultCommand = commandFactory();
   return mergeCommand(defaultCommand, payload);
 };
@@ -93,9 +93,12 @@ export const commandSlice = createSlice({
   initialState: commandsAdapter.getInitialState(initialState),
   reducers: {
     removeCommand: commandsAdapter.removeOne,
-    addCommand: (state, action: PayloadAction<CommandPayload>) => {
-      const command = createNewCommand(action.payload);
-      return commandsAdapter.addOne(state, command)
+    addCommand: {
+      reducer: commandsAdapter.addOne,
+      prepare: (command: CommandPayload) => {
+        const payload = createNewCommand(command);
+        return { payload };
+      },
     },
     changeCommand: (state, action: PayloadAction<Partial<CommandPayload>>) => {
       const commandId = action.payload.id;
@@ -106,11 +109,17 @@ export const commandSlice = createSlice({
 
       state.entities[commandId] = mergeCommand(command, action.payload);
     },
-    insertCommand: (state, action: PayloadAction<number>) => {
-      const command = createNewCommand();
-      commandsAdapter.addOne(state, command);
-      state.ids.pop();
-      state.ids.splice(action.payload, 0, command.id);
+    insertCommand: {
+      reducer: (state, action: PayloadAction<{ command: Command, index: number; }>) => {
+        const { command, index } = action.payload;
+        commandsAdapter.addOne(state, command);
+        state.ids.pop();
+        state.ids.splice(index, 0, command.id);
+      },
+      prepare: (index: number) => {
+        const command = createNewCommand();
+        return  { payload: { command, index } };
+      }
     },
     createCommandCopy: (
       state, 

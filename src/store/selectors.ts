@@ -53,3 +53,14 @@ export const getRecipeCommands = createSelector(
     return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
   }
 )
+
+export const getCurrentRecipeCommands = createSelector(
+  [
+    getCurrentRecipe,
+    selectCommands
+  ],
+  (recipe, commands): Command[] => {
+    const recipeCommands = recipe?.commands ?? [];
+    return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
+  }
+)

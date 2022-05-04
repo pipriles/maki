@@ -8,13 +8,18 @@ import {
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core';
+
 import { SortableContext, verticalListSortingStrategy, } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis, } from '@dnd-kit/modifiers'
 
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { changeCurrentCommand, copyCommand } from '../store/slices/ui';
-import { commandSelectors, getCurrentCommand } from '../store/selectors';
+import { 
+  getCurrentCommand, 
+  getCurrentRecipe, 
+  getCurrentRecipeCommands 
+} from '../store/selectors';
 import { 
   commandFactory, 
   createCommandCopy, 
@@ -43,13 +48,15 @@ const CommandList = () => {
 
   const styles = useStyles();
   const dispatch = useAppDispatch();
-  const commandIds = useAppSelector(commandSelectors.selectIds);
-  const commands = useAppSelector(commandSelectors.selectAll)
+  const currentRecipe = useAppSelector(getCurrentRecipe);
+  const commands = useAppSelector(getCurrentRecipeCommands)
   const currentCommand = useAppSelector(getCurrentCommand)
   const commandCopied = useAppSelector(state => state.ui.commandCopied);
 
   const fakeCommand = commandFactory();
   const commandSteps = [ ...commands, fakeCommand ];
+
+  const commandIds = currentRecipe?.commands ?? [];
 
   const handleCopy = React.useCallback(() => {
     dispatch(copyCommand(currentCommand?.id));

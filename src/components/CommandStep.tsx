@@ -122,6 +122,8 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
 
     if (index >= commands.length) {
       batch(() => {
+        const action = addCommand(command)
+        console.log(action)
         dispatch(addCommand(command));
         dispatch(changeCurrentCommand(command.id));
       });
