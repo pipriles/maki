@@ -1,19 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Command } from './command';
-import { Recipe } from './recipe';
-
-interface ContextMenu {
-  command?: Command['id'];
-  left?: number;
-  top?: number;
-};
-
-export interface IUi {
-  currentRecipe?: Recipe['id'];
-  currentCommand?: Command['id'];
-  commandCopied?: Command['id'];
-  contextMenu?: ContextMenu;
-}
+import { IUi } from '../../models';
 
 const initialState: IUi = {
   currentRecipe: "1",

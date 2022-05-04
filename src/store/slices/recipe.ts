@@ -6,19 +6,10 @@ import {
   EntityState 
 } from '@reduxjs/toolkit';
 
-import { Command } from '../slices/command';
 import { v4 as uuidv4 } from 'uuid';
+import { Recipe } from '../../models';
 
 import COMMANDS from '../defaults/commands.json';
-
-export interface Recipe {
-  id: string;
-  name: string;
-  description: string;
-  executionSpeed: number;
-  commands: Command['id'][];
-  recipeLog: string[];
-}
 
 export const recipeAdapter = createEntityAdapter<Recipe>();
 

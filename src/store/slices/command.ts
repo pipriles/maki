@@ -1,47 +1,9 @@
 import { createSlice, PayloadAction, createEntityAdapter, EntityState } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 import { arrayMove } from '@dnd-kit/sortable';
+import { Command, CommandPayload, CommandParameters } from '../../models';
+
 import COMMANDS from '../defaults/commands.json';
-
-interface LocatorParameter {
-  query: string;
-  queryType: string;
-  elementIndex?: number | null;
-}
-
-interface CoordinatesParameter {
-  x?: number | null;
-  y?: number | null;
-}
-
-export interface CommandParameters {
-  locator: LocatorParameter;
-  text: string;
-  url: string;
-  timeout: number;
-  coordinates: CoordinatesParameter;
-  strip: boolean;
-  collection: boolean;
-  attribute: string;
-  regex: string;
-}
-
-export interface Command {
-  id: string;
-  recipeId: string;
-  commandType: string;
-  description: string;
-  parameters: CommandParameters;
-  commandStatus?: "running" | "done" | "error";
-  commandResult?: unknown;
-  commandLogger?: string[];
-  field: string;
-}
-
-export interface CommandPayload extends Omit<Partial<Command>, 'parameters' | 'recipeId'> { 
-  recipeId: string;
-  parameters?: Partial<CommandParameters>
-}
 
 const defaultParameters: CommandParameters = {
   "locator": {

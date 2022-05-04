@@ -1,10 +1,9 @@
 import React from 'react';
 
 import { useAppDispatch } from '../store/hooks';
-import { Recipe, changeRecipe } from '../store/slices/recipe';
+import { Recipe } from '../models';
+import { changeRecipe } from '../store/slices/recipe';
 import { createAppUseStyles } from '../styles';
-
-import Autocomplete from './Autocomplete';
 
 const useStyles = createAppUseStyles((theme) => ({
   root: {

@@ -7,7 +7,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand, commandSelectors } from '../store/selectors';
 import { changeCurrentCommand, setContextMenu } from '../store/slices/ui';
-import { Command, addCommand, changeCommand } from '../store/slices/command';
+import { addCommand, changeCommand } from '../store/slices/command';
+import { Command } from '../models';
 import { createAppUseStyles } from '../styles';
 
 const useStyles = createAppUseStyles(theme => ({

@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit';
-import { Command, commandsAdapter } from './slices/command';
-import { Recipe, recipeAdapter } from './slices/recipe';
+import { commandsAdapter } from './slices/command';
+import { recipeAdapter } from './slices/recipe';
 import { RootState } from './';
 import { isTruthy } from '../common/utils';
 
@@ -48,7 +48,7 @@ export const getRecipeCommands = createSelector(
     recipeSelectors.selectById,
     selectCommands
   ],
-  (recipe, commands): Command[] => {
+  (recipe, commands) => {
     const recipeCommands = recipe?.commands ?? [];
     return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
   }
@@ -59,7 +59,7 @@ export const getCurrentRecipeCommands = createSelector(
     getCurrentRecipe,
     selectCommands
   ],
-  (recipe, commands): Command[] => {
+  (recipe, commands) => {
     const recipeCommands = recipe?.commands ?? [];
     return recipeCommands.map(id => commands.entities[id]).filter(isTruthy);
   }

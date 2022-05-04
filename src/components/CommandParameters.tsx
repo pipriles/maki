@@ -2,7 +2,8 @@ import React from 'react';
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentCommand } from '../store/selectors';
-import { CommandPayload, CommandParameters, changeCommand } from '../store/slices/command';
+import { changeCommand } from '../store/slices/command';
+import { CommandPayload, CommandParameters } from '../models';
 import CommandTypes from '../constants/commandTypes.json';
 
 import CommandParameter from './CommandParameter';

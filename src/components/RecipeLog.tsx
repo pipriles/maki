@@ -1,6 +1,6 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
-import { Recipe } from '../store/slices/recipe';
+import { Recipe } from '../models';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {

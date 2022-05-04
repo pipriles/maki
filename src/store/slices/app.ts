@@ -1,10 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Tabs } from 'webextension-polyfill';
-
-export interface IApp {
-  activeTab?: Tabs.Tab
-  running: boolean;
-}
+import { IApp } from '../../models';
 
 const initialState: IApp = {
   activeTab: undefined,

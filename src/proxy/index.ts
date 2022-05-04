@@ -3,17 +3,10 @@ import browser from 'webextension-polyfill';
 import { store, select } from '../store';
 import { getActiveTab, commandSelectors, getRecipeCommands } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
-import { Command, changeCommand } from '../store/slices/command';
-import { Recipe, pushMessage } from '../store/slices/recipe';
-import { 
-  Message, 
-  Executor, 
-  Response, 
-  makeResponse, 
-  makeErrorResponse, 
-  delay, 
-  hasOwnProperty,
-} from '../common/utils';
+import { changeCommand } from '../store/slices/command';
+import { pushMessage } from '../store/slices/recipe';
+import { makeResponse, makeErrorResponse, delay, hasOwnProperty, } from '../common/utils';
+import { Command, Recipe, Message, Executor, Response } from '../models';
 
 const openUrl: Executor = async ({ parameters }: Command) => {
 
