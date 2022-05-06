@@ -1,7 +1,6 @@
 import React from 'react';
 import { batch } from 'react-redux';
-import { BiPlay, BiPause, BiStop, BiDotsVertical, BiExport } from 'react-icons/bi';
-import { AiOutlineExport } from 'react-icons/ai';
+import { BiPlay, BiPause, BiStop } from 'react-icons/bi';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentRecipe, commandSelectors } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
@@ -49,7 +48,7 @@ const useStyles = createAppUseStyles(theme => ({
   }
 }));
 
-const Toolbar = () => {
+const StatusBar = () => {
 
   const styles = useStyles();
   const dispatch = useAppDispatch();
@@ -74,19 +73,11 @@ const Toolbar = () => {
     });
   };
 
-  const onClickExport = () => {
-    // Open export file
-  };
-
   return (
     <div className={styles.root}>
       <div className={styles.above}>
         <CurrentTab />
-        <div className={styles.options}>
-          <button className={styles.button} onClick={onClickExport}>
-            <AiOutlineExport />
-          </button>
-        </div>
+        <div className={styles.options}></div>
       </div>
       <div className={styles.below}>
         <div className={styles.playback}>
@@ -105,4 +96,4 @@ const Toolbar = () => {
   );
 };
 
-export default Toolbar;
+export default StatusBar;
