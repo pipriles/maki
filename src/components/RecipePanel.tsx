@@ -110,7 +110,7 @@ const CommandPanel = () => {
   return (
     <div className={styles.root}>
       <Resizable 
-        defaultSize={{ width: 'auto', height: 126 }} 
+        defaultSize={{ width: 'auto', height: 200 }} 
         minHeight={126} 
         maxHeight={300}
         enable={{ top: true }}

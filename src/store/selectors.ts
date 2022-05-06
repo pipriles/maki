@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { commandsAdapter } from './slices/command';
 import { recipeAdapter } from './slices/recipe';
 import { RootState } from './';
+import { Command } from '../models';
 import { isTruthy } from '../common/utils';
 
 export const selectRecipes = (state: RootState) => state.recipes;
@@ -36,8 +37,9 @@ export const getRecipeResults = createSelector(
     if (recipe === undefined) return;
     const recipeCommands = recipe.commands.map(id => commands.entities[id]);
     const result = recipeCommands
-      .filter(command => command && command.field)
-      .map(command => [command?.field, command?.commandResult])
+      .filter(isTruthy)
+      .filter(command => command.field)
+      .map(command => [command.field, command.commandResult] as const)
     console.log(result);
     return result;
   }
