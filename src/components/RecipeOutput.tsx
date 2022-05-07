@@ -6,12 +6,13 @@ import { getRecipeResults } from '../store/selectors';
 import { MdKeyboardArrowUp, MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
 import { AiOutlineExport } from 'react-icons/ai';
 
+import Toolbar from './Toolbar';
+
 const useStyles = createAppUseStyles(theme => ({
   root: {
     flexGrow: 1,
     flexBasis: 30,
     overflow: "auto",
-    padding: theme.spacing(1),
   },
   pre: {
     margin: 0,
@@ -20,42 +21,38 @@ const useStyles = createAppUseStyles(theme => ({
   row: {
     display: "flex",
     fontSize: 12,
-    borderBottom: [1, "solid", theme.palette.background],
+    borderBottom: [1, "solid", theme.lighten(theme.palette.background, .15)],
   },
   label: {
     flexGrow: 1,
-    flexBasis: "35%",
+    flexBasis: 200,
     minWidth: 200,
+    width: "50%",
     padding: [theme.spacing(.75), theme.spacing(1)],
-    backgroundColor: theme.lighten(theme.palette.background, .25),
+    backgroundColor: theme.lighten(theme.palette.background, .15),
   },
   value: {
     flexGrow: 2,
     flexBasis: "65%",
     padding: [theme.spacing(.5), theme.spacing(1)],
   },
-  bar: {
-    display: "flex",
-    alignItems: "center",
-    background: theme.lighten(theme.palette.background, .5),
-  },
-  item: {
+  text: {
+    display: "block",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: 256,
-    fontSize: 12,
-    display: "inline-block",
-    padding: 4,
+    maxWidth: 400,
   },
   button: {
     display: "flex",
-    alignItems: "center",
-    fontSize: 14,
     background: "none",
     color: theme.palette.typography.primary,
-    padding: 4,
-  },
+    padding: 0,
+    fontSize: 20,
+    '&:hover': {
+      color: theme.palette.primary.main,
+    }
+  }
 }));
 
 const RecipeOutput = () => {
@@ -87,32 +84,56 @@ const RecipeOutput = () => {
       <div className={styles.root}>
         {recipeResult}
       </div>
-      <div className={styles.bar}>
-        <button className={styles.button}>
-          <MdKeyboardArrowUp />
-        </button>
-        <button className={styles.button}>
-          <MdKeyboardArrowLeft />
-        </button>
-        <button className={styles.button}>
-          <MdKeyboardArrowRight />
-        </button>
-        {/* Divider */}
-        <span className={styles.item}>
-          1 of 345
-        </span>
-        <span className={styles.item}>
-          https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html
-        </span>
-        {/* Spacer */}
-        {/* Divider */}
-        <button className={styles.button}>
-          JSON
-        </button>
-        <button className={styles.button}>
-          <AiOutlineExport />
-        </button>
-      </div>
+      <Toolbar>
+
+        <Toolbar.ToolbarItem>
+          <button className={styles.button}>
+            <MdKeyboardArrowUp />
+          </button>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarItem>
+          <button className={styles.button}>
+            <MdKeyboardArrowLeft />
+          </button>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarItem>
+          <button className={styles.button}>
+            <MdKeyboardArrowRight />
+          </button>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarDivider />
+
+        <Toolbar.ToolbarItem>
+          <span className={styles.text}>
+            1 of 345
+          </span>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarItem>
+          <span className={styles.text}>
+            https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html
+          </span>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarSpacer />
+        <Toolbar.ToolbarDivider />
+
+        <Toolbar.ToolbarItem>
+          <button className={styles.button} style={{fontSize: 12}} aria-label="Format">
+            JSON
+          </button>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarItem padding="4px 6px">
+          <button className={styles.button} title="Export" aria-label="Export">
+            <AiOutlineExport />
+          </button>
+        </Toolbar.ToolbarItem>
+
+      </Toolbar>
     </>
   );
 };

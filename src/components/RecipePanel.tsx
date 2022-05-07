@@ -22,9 +22,10 @@ const useStyles = createAppUseStyles(theme => ({
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
   },
   tab: {
-    fontSize: theme.sizes(1.75),
+    fontSize: theme.sizes(1.5),
+    fontWeight: 600,
     padding: [theme.spacing(0.75), theme.spacing(1.5)],
-    minWidth: 75,
+    minWidth: 60,
     textAlign: 'center',
     cursor: "pointer",
     '&:hover': {
