@@ -26,7 +26,7 @@ const RecipeLog = ({ recipe }: RecipeLogProps) => {
 
   const styles = useStyles();
 
-  const recipeLogger = recipe.recipeLog ?? []
+  const recipeLogger = recipe.logger ?? []
   const messages = recipeLogger.map((msg, index) => (
     <span className={styles.message} key={index}>
       {msg}

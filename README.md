@@ -38,8 +38,12 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add recipes to Redux state
 - [x] Change Command Panel to be Recipe panel
 - [x] Create default test recipe
+- [x] Redesign commnad parameters to be only on one component
+- [ ] Fix current tab not refreshing
+- [ ] Add button to clear output
 - [ ] Add export feature
-- [ ] Redesign commnad parameters to be only on one component
+- [ ] Changed current tab select mechanism
+- [ ] Automatically add input from current URL to recipe
 - [ ] Improve select element on document
 - [ ] Show matches count
 - [ ] Implement ability detect a selector shared in multiple elements

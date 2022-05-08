@@ -4,7 +4,7 @@ import { store, select } from '../store';
 import { getActiveTab, commandSelectors, getRecipeCommands } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
 import { changeCommand } from '../store/slices/command';
-import { pushMessage } from '../store/slices/recipe';
+import { pushMessage, upsertResult } from '../store/slices/recipe';
 import { makeResponse, makeErrorResponse, delay, hasOwnProperty, } from '../common/utils';
 import { Command, Recipe, Message, Executor, Response } from '../models';
 
@@ -74,8 +74,15 @@ const updateCommandStatus = (id: Command['id'], commandStatus: Command['commandS
   return store.dispatch(action);
 };
 
-const updateCommandResult = (id: Command['id'], commandResult: Command['commandResult']) => {
-  const action = changeCommand({ id, commandResult });
+const updateCommandResult = (command: Command, payload: unknown) => {
+
+  const currentTab = select(getActiveTab);
+  const label = currentTab?.url;
+
+  if (label === undefined) return;
+
+  const result = { label, data: { [command.id]: payload } };
+  const action = upsertResult({ recipeId: command.recipeId, result })
   return store.dispatch(action);
 };
 
@@ -126,7 +133,7 @@ export const runSingleCommand = async (command: Command) => {
 
     if (resp.type == 'SUCCESS') {
       updateCommandStatus(command.id, 'done')
-      updateCommandResult(command.id, resp.payload)
+      updateCommandResult(command, resp.payload)
     }
 
   } catch(e) {

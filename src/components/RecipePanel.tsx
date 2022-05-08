@@ -124,7 +124,7 @@ const CommandPanel = () => {
           </PanelTabs>
           <PanelBody value={currentTab}>
             <RecipeInput recipe={currentRecipe} />
-            <RecipeOutput />
+            <RecipeOutput recipe={currentRecipe} />
             <RecipeLog recipe={currentRecipe} />
           </PanelBody>
         </div>

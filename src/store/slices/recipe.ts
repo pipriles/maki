@@ -2,7 +2,7 @@ import { createSlice, PayloadAction, createEntityAdapter, EntityState } from '@r
 import { arrayMove } from '@dnd-kit/sortable';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Recipe } from '../../models';
+import { Recipe, Result } from '../../models';
 import { addCommand, removeCommand, insertCommand } from './command';
 
 import COMMANDS from '../defaults/commands.json';
@@ -14,8 +14,11 @@ const recipeFactory = (merge?: Partial<Recipe>): Recipe => ({
   name: "Recipe",
   description: "",
   executionSpeed: 500,
+  exportFormat: "JSON",
   commands: [],
-  recipeLog: [],
+  logger: [],
+  inputs: [],
+  output: [],
   ...merge
 });
 
@@ -45,13 +48,13 @@ export const recipeSlice = createSlice({
       if (recipe === undefined)
         return state;
 
-      const changes = { recipeLog: [ message, ...recipe.recipeLog ] };
+      const changes = { logger: [ message, ...recipe.logger ] };
       const update = { id: recipeId, changes };
       return recipeAdapter.updateOne(state, update);
     },
     clearMessages: (state, action: PayloadAction<Recipe['id']>) => {
       const recipeId = action.payload;
-      const change = { id: recipeId, changes: { recipeLog: [] } }
+      const change = { id: recipeId, changes: { logger: [] } }
       return recipeAdapter.updateOne(state, change);
     },
     moveCommand: (
@@ -66,6 +69,21 @@ export const recipeSlice = createSlice({
         recipe.commands = arrayMove(commands, oldIndex, newIndex); 
       }
     },
+    upsertResult: (state, action: PayloadAction<{ recipeId: Recipe['id'], result: Result }>) => {
+      const { recipeId, result } = action.payload;
+      const recipe = state.entities[recipeId];
+
+      if (recipe === undefined) return;
+
+      const index = recipe.output.findIndex(obj => obj.label === result.label);
+
+      if (index === -1) {
+        recipe.output.push(result);
+      } else {
+        const obj = recipe.output[index];
+        obj.data = { ...obj.data, ...result.data }; 
+      }
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -99,7 +117,8 @@ export const {
   changeRecipe, 
   pushMessage, 
   clearMessages, 
-  moveCommand 
+  moveCommand,
+  upsertResult,
 } = recipeSlice.actions;
 
 export default recipeSlice.reducer;

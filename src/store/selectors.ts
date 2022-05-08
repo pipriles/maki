@@ -31,7 +31,7 @@ export const getCurrentRecipe = createSelector(
   }
 );
 
-export const getRecipeResults = createSelector(
+export const getRecipeDataFields = createSelector(
   [getCurrentRecipe, selectCommands],
   (recipe, commands) => {
     if (recipe === undefined) return;
@@ -39,8 +39,7 @@ export const getRecipeResults = createSelector(
     const result = recipeCommands
       .filter(isTruthy)
       .filter(command => command.field)
-      .map(command => [command.field, command.commandResult] as const)
-    console.log(result);
+      .map(command => [command.id, command.field] as const)
     return result;
   }
 );

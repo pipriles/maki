@@ -1,7 +1,9 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
-import { useAppSelector } from '../store/hooks';
-import { getRecipeResults } from '../store/selectors';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
+import { getRecipeDataFields, getActiveTab } from '../store/selectors';
+import { changeRecipe } from '../store/slices/recipe';
+import { Recipe } from '../models';
 
 import { MdKeyboardArrowUp, MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
 import { AiOutlineExport } from 'react-icons/ai';
@@ -41,7 +43,7 @@ const useStyles = createAppUseStyles(theme => ({
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: 400,
+    maxWidth: 320,
   },
   button: {
     display: "flex",
@@ -55,25 +57,48 @@ const useStyles = createAppUseStyles(theme => ({
   }
 }));
 
-const RecipeOutput = () => {
+interface RecipeOutputProps {
+  recipe: Recipe;
+}
+
+const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
 
   const styles = useStyles();
-  // const results = useAppSelector(getRecipeResults);
+  const dispatch = useAppDispatch();
+  const fields = useAppSelector(getRecipeDataFields);
+  const activeTab = useAppSelector(getActiveTab);
 
-  const results = [
-    ['Name', 'Uzumaki'],
-    ['Price', '$29.9'],
-    ['Author', 'Junji Ito'],
-    ['Description', 'Uzumaki is a Japanese horror manga series written and illustrated by Junji Ito. Appearing as a serial in the weekly seinen manga magazine Big Comic Spirits from 1998 to 1999, the chapters were compiled into three bound volumes by Shogakukan and published from August 1998 to September 1999.'],
-    ['Date', '1999'],
-    ['Genre', 'Horror'],
-  ]
+  const [index, setIndex] = React.useState(0);
 
-  const recipeResult = results?.map(row => {
-    const [label, value] = row;
+  const currentResult = recipe.output[index];
+  const resultLabel = currentResult?.label ?? activeTab?.url;
+  const resultState = currentResult ? `${index+1} of ${recipe.output.length}` : '';
+
+  const onPreviousClick = () => {
+    if (recipe.output.length > 0) {
+      const next = index === 0 ? recipe.output.length-1 : index-1;
+      setIndex(next);
+    }
+  };
+
+  const onNextClick = () => {
+    if (recipe.output.length > 0) {
+      const next = (index + 1) % recipe.output.length;
+      setIndex(next);
+    }
+  };
+
+  const handleFormatClick = () => {
+    const format: Recipe['exportFormat'] = recipe.exportFormat === 'JSON' ? 'CSV' : 'JSON';
+    const payload = { id: recipe.id, changes: { exportFormat: format } };
+    dispatch(changeRecipe(payload));
+  }
+
+  const recipeResult = fields?.map(([id, field]) => {
+    const value = currentResult?.data[id];
     return (
-      <div className={styles.row}>
-        <div className={styles.label}>{label}</div>
+      <div className={styles.row} key={id}>
+        <div className={styles.label}>{field}</div>
         <div className={styles.value}>{JSON.stringify(value, null, 2)}</div>
       </div>
     );
@@ -93,13 +118,13 @@ const RecipeOutput = () => {
         </Toolbar.ToolbarItem>
 
         <Toolbar.ToolbarItem>
-          <button className={styles.button}>
+          <button onClick={onPreviousClick} className={styles.button}>
             <MdKeyboardArrowLeft />
           </button>
         </Toolbar.ToolbarItem>
 
         <Toolbar.ToolbarItem>
-          <button className={styles.button}>
+          <button onClick={onNextClick} className={styles.button}>
             <MdKeyboardArrowRight />
           </button>
         </Toolbar.ToolbarItem>
@@ -108,13 +133,13 @@ const RecipeOutput = () => {
 
         <Toolbar.ToolbarItem>
           <span className={styles.text}>
-            1 of 345
+            {resultState}
           </span>
         </Toolbar.ToolbarItem>
 
         <Toolbar.ToolbarItem>
           <span className={styles.text}>
-            https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html
+            {resultLabel}
           </span>
         </Toolbar.ToolbarItem>
 
@@ -122,8 +147,12 @@ const RecipeOutput = () => {
         <Toolbar.ToolbarDivider />
 
         <Toolbar.ToolbarItem>
-          <button className={styles.button} style={{fontSize: 12}} aria-label="Format">
-            JSON
+          <button 
+            onClick={handleFormatClick}
+            className={styles.button} 
+            style={{fontSize: 12}} 
+            aria-label="Format">
+            {recipe.exportFormat}
           </button>
         </Toolbar.ToolbarItem>
 
