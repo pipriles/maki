@@ -2,7 +2,6 @@ import { createSelector } from '@reduxjs/toolkit';
 import { commandsAdapter } from './slices/command';
 import { recipeAdapter } from './slices/recipe';
 import { RootState } from './';
-import { Command } from '../models';
 import { isTruthy } from '../common/utils';
 
 export const selectRecipes = (state: RootState) => state.recipes;
