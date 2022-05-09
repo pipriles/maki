@@ -3,7 +3,8 @@
   "name": "Scaper",
   "version": "0.1",
   "permissions": [
-    "tabs"
+    "tabs",
+    "downloads"
   ],
   "action": {},
   "content_security_policy": {

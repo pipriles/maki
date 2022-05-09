@@ -30,15 +30,15 @@ export const getCurrentRecipe = createSelector(
   }
 );
 
-export const getRecipeResults = createSelector(
+export const getRecipeDataFields = createSelector(
   [getCurrentRecipe, selectCommands],
   (recipe, commands) => {
     if (recipe === undefined) return;
     const recipeCommands = recipe.commands.map(id => commands.entities[id]);
     const result = recipeCommands
-      .filter(command => command && command.field)
-      .map(command => [command?.field, command?.commandResult])
-    console.log(result);
+      .filter(isTruthy)
+      .filter(command => command.field)
+      .map(command => [command.id, command.field] as const)
     return result;
   }
 );

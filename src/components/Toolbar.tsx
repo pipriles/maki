@@ -1,108 +1,101 @@
 import React from 'react';
-import { batch } from 'react-redux';
-import { BiPlay, BiPause, BiStop, BiDotsVertical, BiExport } from 'react-icons/bi';
-import { AiOutlineExport } from 'react-icons/ai';
-import { useAppSelector, useAppDispatch } from '../store/hooks';
-import { getCurrentRecipe, commandSelectors } from '../store/selectors';
-import { changeRunningState } from '../store/slices/app';
-import { resetAllCommandStatus } from '../store/slices/command';
-import { clearMessages } from '../store/slices/recipe';
 import { createAppUseStyles } from '../styles';
-import { runCommands } from '../proxy'
-
-import CurrentTab from './CurrentTab';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
-    borderBottom: [1, "solid", theme.palette.primary.main ],
-  },
-  playback: {
     display: "flex",
   },
-  button: {
-    background: "none",
-    padding: 0,
-    fontSize: theme.sizes(2.5),
-    width: 32,
-    aspectRatio: 1,
+  inner: {
+    flex: 1,
+    width: 0,
     display: "flex",
-    justifyContent: "center",
     alignItems: "center",
-    color: theme.palette.typography.primary,
-    '&:hover': {
-      color: theme.palette.primary.main,
-    },
+    background: theme.lighten(theme.palette.background, .5),
+    overflow: "auto",
   },
-  above: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: [theme.spacing(0.25), theme.spacing(1)],
+  item: {
+    display: "block",
+    padding: 4,
+    fontSize: 12,
   },
-  below: {
-    borderTop: [1, "solid", theme.lighten(theme.palette.background, 0.5)],
-    display: "flex",
-    justifyContent: "space-between",
+  divider: {
+    paddingLeft: theme.spacing(.5),
+    marginLeft: theme.spacing(.5),
+    borderLeft: [1, "solid", theme.darken(theme.palette.typography.primary, 0.75)],
+    display: "block",
+    height: "50%",
   },
-  options: {
-    display: "flex",
-  }
+  spacer: {
+    flexGrow: 1,
+    display: "block",
+  },
 }));
 
-const Toolbar = () => {
+interface ToolbarItemProps {
+  fontSize?: React.CSSProperties['fontSize'];
+  padding?: React.CSSProperties['padding'];
+  style?: React.CSSProperties;
+  children: React.ReactNode;
+};
+
+export const ToolbarItem = ({ 
+  children, 
+  fontSize, 
+  padding,
+  style 
+}: ToolbarItemProps) => {
 
   const styles = useStyles();
-  const dispatch = useAppDispatch();
-  const currentRecipe = useAppSelector(getCurrentRecipe);
-  const commands = useAppSelector(commandSelectors.selectAll);
+  const customStyles: React.CSSProperties = { fontSize, padding, ...style };
 
-  const onRecipePlay = () => {
-    console.log('Start scraping!');
-    if (currentRecipe !== undefined)
-      runCommands(currentRecipe);
-  };
+  return (
+    <div className={styles.item} style={customStyles}>
+      {children}
+    </div>
+  )
+};
 
-  const onRecipePause = () => {
-    dispatch(changeRunningState(false));
-  }
+interface ToolbarDividerProps {
+  height?: React.CSSProperties['height'];
+};
 
-  const onRecipeStop = () => {
-    batch(() => {
-      dispatch(changeRunningState(false));
-      dispatch(resetAllCommandStatus());
-      currentRecipe && dispatch(clearMessages(currentRecipe.id));
-    });
-  };
+export const ToolbarDivider = ({ height }: ToolbarDividerProps) => {
 
-  const onClickExport = () => {
-    // Open export file
-  };
+  const styles = useStyles();
+
+  return (
+    <span className={styles.divider} style={{ height }} />
+  );
+};
+
+export const ToolbarSpacer = () => {
+
+  const styles = useStyles();
+
+  return (
+    <span className={styles.spacer} />
+  );
+};
+
+interface ToolbarProps {
+  children: React.ReactNode;
+}
+
+export const Toolbar = ({ children }: ToolbarProps) => {
+
+  const styles = useStyles();
 
   return (
     <div className={styles.root}>
-      <div className={styles.above}>
-        <CurrentTab />
-        <div className={styles.options}>
-          <button className={styles.button} onClick={onClickExport}>
-            <AiOutlineExport />
-          </button>
-        </div>
-      </div>
-      <div className={styles.below}>
-        <div className={styles.playback}>
-          <button className={styles.button} onClick={onRecipePlay}>
-            <BiPlay />
-          </button>
-          <button className={styles.button} onClick={onRecipePause}>
-            <BiPause />
-          </button>
-          <button className={styles.button} onClick={onRecipeStop}>
-            <BiStop />
-          </button>
-        </div>
+      <div className={styles.inner}>
+        { children }
       </div>
     </div>
   );
 };
+
+Toolbar.ToolbarSpacer = ToolbarSpacer;
+Toolbar.ToolbarDivider = ToolbarDivider;
+Toolbar.ToolbarItem = ToolbarItem;
 
 export default Toolbar;

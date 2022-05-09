@@ -22,9 +22,10 @@ const useStyles = createAppUseStyles(theme => ({
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
   },
   tab: {
-    fontSize: theme.sizes(1.75),
+    fontSize: theme.sizes(1.5),
+    fontWeight: 600,
     padding: [theme.spacing(0.75), theme.spacing(1.5)],
-    minWidth: 75,
+    minWidth: 60,
     textAlign: 'center',
     cursor: "pointer",
     '&:hover': {
@@ -110,7 +111,7 @@ const CommandPanel = () => {
   return (
     <div className={styles.root}>
       <Resizable 
-        defaultSize={{ width: 'auto', height: 126 }} 
+        defaultSize={{ width: 'auto', height: 200 }} 
         minHeight={126} 
         maxHeight={300}
         enable={{ top: true }}
@@ -123,7 +124,7 @@ const CommandPanel = () => {
           </PanelTabs>
           <PanelBody value={currentTab}>
             <RecipeInput recipe={currentRecipe} />
-            <RecipeOutput />
+            <RecipeOutput recipe={currentRecipe} />
             <RecipeLog recipe={currentRecipe} />
           </PanelBody>
         </div>

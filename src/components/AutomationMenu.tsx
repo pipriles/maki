@@ -1,7 +1,7 @@
 import React from 'react';
 import { createAppUseStyles } from '../styles';
 
-import Toolbar from './Toolbar';
+import StatusBar from './StatusBar';
 import CommandList from './CommandList';
 import RecipePanel from './RecipePanel';
 import CommandPanel from './CommandPanel';
@@ -29,7 +29,7 @@ const AutomationMenu = () => {
 
   return (
     <div className={styles.root}>
-      <Toolbar />
+      <StatusBar />
       <div className={styles.body}>
         <div className={styles.inner}>
           <CommandList />

@@ -12,7 +12,7 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     changeActiveTab: (state: IApp, action: PayloadAction<Tabs.Tab>) => {
-      return { ...state, activeTab: action.payload };
+      return state.running ? state : { ...state, activeTab: action.payload };
     },
     changeRunningState: (state: IApp, action: PayloadAction<boolean>) => {
       return { ...state, running: action.payload };

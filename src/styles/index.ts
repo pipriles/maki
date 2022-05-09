@@ -10,7 +10,7 @@ export const defaultTheme = {
     type: "dark",
     primary:   { main: "#8B9BFD" },
     secondary: { main: "#F5F5F5" },
-    background: "#141414"
+    background: "#121212"
   },
   typography: {
     fontFamily: 'monospace, ui-monospace'

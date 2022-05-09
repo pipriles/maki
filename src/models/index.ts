@@ -55,10 +55,17 @@ export interface Recipe {
   name: string;
   description: string;
   executionSpeed: number;
+  exportFormat: "JSON" | "CSV";
   commands: Command['id'][];
-  recipeLog: string[];
+  logger: string[];
+  inputs: string[];
+  output: Result[];
 }
 
+export interface Result {
+  label: string;
+  data: Record<Command['id'], unknown>;
+}
 
 interface LocatorParameter {
   query: string;
@@ -90,8 +97,6 @@ export interface Command {
   description: string;
   parameters: CommandParameters;
   commandStatus?: "running" | "done" | "error";
-  commandResult?: unknown;
-  commandLogger?: string[];
   field: string;
 }
 
