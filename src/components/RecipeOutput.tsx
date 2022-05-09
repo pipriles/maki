@@ -5,7 +5,10 @@ import { getRecipeDataFields, getActiveTab } from '../store/selectors';
 import { changeRecipe } from '../store/slices/recipe';
 import { Recipe } from '../models';
 
-import { MdKeyboardArrowUp, MdKeyboardArrowRight, MdKeyboardArrowLeft } from 'react-icons/md';
+import { MdKeyboardArrowUp, 
+  MdKeyboardArrowRight, 
+  MdKeyboardArrowLeft, 
+  MdSync } from 'react-icons/md';
 import { AiOutlineExport } from 'react-icons/ai';
 
 import Toolbar from './Toolbar';
@@ -68,11 +71,7 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
   const fields = useAppSelector(getRecipeDataFields);
   const activeTab = useAppSelector(getActiveTab);
 
-  const [index, setIndex] = React.useState(0);
-
-  const currentResult = recipe.output[index];
-  const resultLabel = currentResult?.label ?? activeTab?.url;
-  const resultState = currentResult ? `${index+1} of ${recipe.output.length}` : '';
+  const [index, setIndex] = React.useState(-1);
 
   const onPreviousClick = () => {
     if (recipe.output.length > 0) {
@@ -88,11 +87,26 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
     }
   };
 
+  const syncCurrentTab = () => {
+    if (!activeTab) return;
+    // search current tab in results and update index
+    const index = recipe.output.findIndex(result => result.label === activeTab.url);
+    setIndex(index);
+  };
+
   const handleFormatClick = () => {
     const format: Recipe['exportFormat'] = recipe.exportFormat === 'JSON' ? 'CSV' : 'JSON';
     const payload = { id: recipe.id, changes: { exportFormat: format } };
     dispatch(changeRecipe(payload));
   }
+
+  React.useEffect(() => {
+    syncCurrentTab();
+  }, [recipe]);
+
+  const currentResult = recipe.output[index];
+  const resultLabel = currentResult?.label ?? activeTab?.url;
+  const resultState = currentResult ? `${index+1} of ${recipe.output.length}` : 'Preview';
 
   const recipeResult = fields?.map(([id, field]) => {
     const value = currentResult?.data[id];
@@ -126,6 +140,12 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
         <Toolbar.ToolbarItem>
           <button onClick={onNextClick} className={styles.button}>
             <MdKeyboardArrowRight />
+          </button>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarItem>
+          <button onClick={syncCurrentTab} className={styles.button}>
+            <MdSync />
           </button>
         </Toolbar.ToolbarItem>
 

@@ -32,12 +32,13 @@ browser.runtime.onMessage.addListener((message: Message) => {
 
 browser.tabs.onActivated.addListener(async (activeInfo) => {
   const currentTab = await browser.tabs.get(activeInfo.tabId);
+  console.log(activeInfo);
   store.dispatch(changeActiveTab(currentTab));
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   const activeTab = select(getActiveTab);
-  if (activeTab?.id === tabId || changeInfo.status === "complete")
+  if (activeTab?.id === tabId && changeInfo.status === "complete")
     store.dispatch(changeActiveTab(tab));
 });
 
