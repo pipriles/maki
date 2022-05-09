@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import React from 'react';
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
@@ -100,6 +101,23 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
     dispatch(changeRecipe(payload));
   }
 
+  const handleExport = async () => {
+
+    if (!fields || fields.length <= 0) return;
+
+    const results = recipe.output.map(result => {
+      const entries = fields.map(
+        ([commandId, field]) => [field, result.data[commandId]] as const);
+      return Object.fromEntries(entries);
+    });
+
+    const opts = {type : 'application/json'};
+    const obj = new Blob([JSON.stringify(results, null, 2)], opts);
+    const url = URL.createObjectURL(obj);
+
+    browser.downloads.download({ url });
+  };
+
   React.useEffect(() => {
     syncCurrentTab();
   }, [recipe]);
@@ -177,7 +195,11 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
         </Toolbar.ToolbarItem>
 
         <Toolbar.ToolbarItem padding="4px 6px">
-          <button className={styles.button} title="Export" aria-label="Export">
+          <button 
+            onClick={handleExport}
+            className={styles.button} 
+            title="Export" 
+            aria-label="Export">
             <AiOutlineExport />
           </button>
         </Toolbar.ToolbarItem>

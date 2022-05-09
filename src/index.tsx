@@ -32,7 +32,6 @@ browser.runtime.onMessage.addListener((message: Message) => {
 
 browser.tabs.onActivated.addListener(async (activeInfo) => {
   const currentTab = await browser.tabs.get(activeInfo.tabId);
-  console.log(activeInfo);
   store.dispatch(changeActiveTab(currentTab));
 });
 
