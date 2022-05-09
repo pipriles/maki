@@ -4,9 +4,10 @@ import { useAppSelector, } from '../store/hooks';
 import { getCurrentRecipe } from '../store/selectors';
 import { createAppUseStyles } from '../styles';
 
+import RecipeSettings from './RecipeSettings';
 import RecipeInput from './RecipeInput';
-import RecipeLog from './RecipeLog';
 import RecipeOutput from './RecipeOutput';
+import RecipeLog from './RecipeLog';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
@@ -119,10 +120,12 @@ const CommandPanel = () => {
         <div className={styles.inner}>
           <PanelTabs value={currentTab} onChange={handleChange}>
             <span>Recipe</span>
+            <span>Input</span>
             <span>Output</span>
             <span>Log</span>
           </PanelTabs>
           <PanelBody value={currentTab}>
+            <RecipeSettings recipe={currentRecipe} />
             <RecipeInput recipe={currentRecipe} />
             <RecipeOutput recipe={currentRecipe} />
             <RecipeLog recipe={currentRecipe} />
