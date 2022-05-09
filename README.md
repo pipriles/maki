@@ -4,7 +4,7 @@ This project is a Chrome Extension similar to Selenium IDE designed to automate 
 
 ## Introduction
 
-This project is a work in progress and is part of my Thesis __"Herramienta Interactiva Para Automatizar Los Procesos De Extraccion De Información Web"__.
+This project is a work in progress and is part of my Thesis _"Herramienta Interactiva Para Automatizar Los Procesos De Extraccion De Información Web"_.
 
 I, unfortunately, was not able to include the part of Selenium IDE that allowed me to interact with the page alone without expending too much time trying to understand how it all worked, I discovered that for the browser extension they tried to reuse some code from the main Selenium project and they were importing that code with something called `closure-loader` which made things for me quite difficult setup.
 
@@ -39,9 +39,9 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Change Command Panel to be Recipe panel
 - [x] Create default test recipe
 - [x] Redesign commnad parameters to be only on one component
-- [ ] Fix current tab not refreshing
+- [x] Fix current tab not refreshing
+- [x] Add export feature
 - [ ] Add button to clear output
-- [ ] Add export feature
 - [ ] Changed current tab select mechanism
 - [ ] Automatically add input from current URL to recipe
 - [ ] Improve select element on document

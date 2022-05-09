@@ -80,7 +80,7 @@ const CommandList = () => {
     if (!currentCommand) return;
 
     const index = commands.findIndex(command => command.id === currentCommand.id);
-    const nextCommand = commands[index+1];
+    const nextCommand = commands[index < commands.length-1 ? index+1 : commands.length-2];
 
     batch(() => {
       dispatch(removeCommand(currentCommand.id))
