@@ -78,6 +78,7 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   // - Allow delete url
   // - Allow paste from clipboard
   // Bulk import file
+  // Validate url input
   // Use hotkeys to make it faster
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,6 +86,7 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   };
 
   const handleUrlAdd = () => {
+    if (input === '') return;
     const recipeId = recipe.id;
     batch(() => {
       dispatch(addInput({ recipeId, input }));

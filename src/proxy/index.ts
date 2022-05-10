@@ -180,7 +180,12 @@ export const runCommands = async (recipe: Recipe) => {
 
 export const locateElement = async () => {
   /* Run locator process */
-  return await sendMessageActiveTab({ type: 'LOCATOR' });
+  const currentWindow = await browser.windows.getCurrent();
+  const response = await sendMessageActiveTab({ type: 'LOCATOR' });
+  if (currentWindow.id) 
+    await browser.windows.update(currentWindow.id, { focused: true });
+
+  return response;
 };
 
 const sendMessageActiveTab = async (message: Message) => {
