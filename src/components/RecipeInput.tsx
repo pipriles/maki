@@ -115,9 +115,6 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
     // console.log(event.clipboardData.getData('Text'));
     
     const clip = event.clipboardData;
-    clip.types.find(
-      x => x === "application/x-vnd.google-docs-embedded-grid_range_clip+wrapped");
-
     const data = clip.getData('text/plain');
     const urls = data.split('\n');
 
