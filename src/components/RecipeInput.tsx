@@ -33,8 +33,9 @@ const useStyles = createAppUseStyles(theme => ({
   url: {
     flexGrow: 1,
     display: "flex",
-    padding: [theme.spacing(.75), theme.spacing(1)],
+    padding: [theme.spacing(.75), 0, theme.spacing(1), theme.spacing(1)],
     fontSize: theme.sizes(1.5),
+    border: "none",
   },
   input: {
     flexGrow: 1,
@@ -139,7 +140,7 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   const renderInputs = inputs.map((url, index) => {
     return (
       <div className={styles.row} key={index}>
-        <span className={styles.url}>{url}</span>
+        <input className={styles.url} value={url} />
         <button onClick={handleUrlRemove(index)} className={styles.remove}>
           <MdDeleteOutline />
         </button>
