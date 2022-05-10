@@ -73,12 +73,12 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   const [input, setInput] = React.useState('');
   const styles = useStyles();
 
-  // Display all urls
-  // Add single url easily
-  // Allow delete url
-  // Use hotkeys to make it faster
+  // - Display all urls
+  // - Add single url easily
+  // - Allow delete url
+  // - Allow paste from clipboard
   // Bulk import file
-  // Allow past from clipboard
+  // Use hotkeys to make it faster
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
@@ -108,9 +108,29 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   };
 
   const handleInputPaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+    // if it is text extract urls by delimeter
+    // if it is file parse file by type and extract objects
     // console.log(event.clipboardData.files);
     // console.log(event.clipboardData.types);
     // console.log(event.clipboardData.getData('Text'));
+    
+    const clip = event.clipboardData;
+    clip.types.find(
+      x => x === "application/x-vnd.google-docs-embedded-grid_range_clip+wrapped");
+
+    const data = clip.getData('text/plain');
+    const urls = data.split('\n');
+
+    if (urls.length <= 1) return;
+
+    batch(() => {
+      const recipeId = recipe.id
+      const trimmed = urls.map(url => url.trim())
+      trimmed.forEach(input => dispatch(addInput({ recipeId, input })));
+      setInput('');
+    });
+
+    event.preventDefault();
   };
 
   const handleImport = () => {
