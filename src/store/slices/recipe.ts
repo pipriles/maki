@@ -83,6 +83,42 @@ export const recipeSlice = createSlice({
         const obj = recipe.output[index];
         obj.data = { ...obj.data, ...result.data }; 
       }
+    },
+    addInput: (
+      state, 
+      action: PayloadAction<{ recipeId: Recipe['id']; input: string; }>
+    ) => {
+      const { recipeId, input } = action.payload;
+      const recipe = state.entities[recipeId];
+
+      if (recipe === undefined)
+        return state;
+
+      const changes = { inputs: [ ...recipe.inputs, input ] };
+      const update = { id: recipeId, changes };
+      return recipeAdapter.updateOne(state, update);
+    },
+    removeInput: (
+      state, 
+      action: PayloadAction<{ recipeId: Recipe['id']; index: number; }>
+    ) => {
+      const { recipeId, index } = action.payload;
+      const recipe = state.entities[recipeId];
+
+      if (recipe === undefined || index < 0)
+        return;
+
+      recipe.inputs.splice(index, 1);
+    },
+    clearInput: (
+      state, 
+      action: PayloadAction<Recipe['id']>
+    ) => {
+      const recipeId = action.payload;
+      const recipe = state.entities[recipeId];
+
+      if (recipe === undefined) return;
+      recipe.inputs = [];
     }
   },
   extraReducers: (builder) => {
@@ -119,6 +155,9 @@ export const {
   clearMessages, 
   moveCommand,
   upsertResult,
+  addInput,
+  removeInput,
+  clearInput,
 } = recipeSlice.actions;
 
 export default recipeSlice.reducer;
