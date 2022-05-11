@@ -5,9 +5,9 @@ import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getCurrentRecipe } from '../store/selectors';
 import { changeRunningState } from '../store/slices/app';
 import { resetAllCommandStatus } from '../store/slices/command';
-import { clearMessages } from '../store/slices/recipe';
+import { clearMessages, changeRecipe } from '../store/slices/recipe';
 import { createAppUseStyles } from '../styles';
-import { runCommands } from '../proxy'
+import { playRecipe } from '../proxy'
 
 import CurrentTab from './CurrentTab';
 
@@ -57,7 +57,7 @@ const StatusBar = () => {
   const onRecipePlay = () => {
     console.log('Start scraping!');
     if (currentRecipe !== undefined)
-      runCommands(currentRecipe);
+      playRecipe(currentRecipe);
   };
 
   const onRecipePause = () => {
@@ -68,6 +68,9 @@ const StatusBar = () => {
     batch(() => {
       dispatch(changeRunningState(false));
       dispatch(resetAllCommandStatus());
+
+      const changes = { currentInput: undefined };
+      currentRecipe && dispatch(changeRecipe({ id: currentRecipe.id, changes }));
       currentRecipe && dispatch(clearMessages(currentRecipe.id));
     });
   };

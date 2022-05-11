@@ -21,7 +21,7 @@ export interface LocatorMessage {
 }
 
 export type Message = CommandMessage | TabMessage | LocatorMessage;
-export type Payload = string | Record<string, string> | null;
+export type Payload = unknown;
 
 export interface Response {
   type: 'SUCCESS' | 'ERROR';
@@ -60,6 +60,7 @@ export interface Recipe {
   logger: string[];
   inputs: string[];
   output: Result[];
+  currentInput?: string;
 }
 
 export interface Result {

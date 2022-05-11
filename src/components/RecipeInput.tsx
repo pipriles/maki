@@ -33,8 +33,12 @@ const useStyles = createAppUseStyles(theme => ({
   url: {
     flexGrow: 1,
     display: "flex",
-    padding: [theme.spacing(.75), theme.spacing(1)],
+    padding: [theme.spacing(.75), 0, theme.spacing(1), theme.spacing(1)],
     fontSize: theme.sizes(1.5),
+    border: "none",
+    width: 0,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
   },
   input: {
     flexGrow: 1,
@@ -78,13 +82,16 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   // - Allow delete url
   // - Allow paste from clipboard
   // Bulk import file
+  // Validate url input
   // Use hotkeys to make it faster
+  // Use virtual lists to avoid rendering all inputs
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
   };
 
   const handleUrlAdd = () => {
+    if (input === '') return;
     const recipeId = recipe.id;
     batch(() => {
       dispatch(addInput({ recipeId, input }));

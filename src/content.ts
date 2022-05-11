@@ -24,41 +24,81 @@ const getElement = (locator: Locator) => {
     throw new Error(`Please define a selector`);
 
   const extractor = queryType !== 'XPATH' ? getElementByCSS : getElementByXPATH;
-
-  return !query ? null : extractor(query);
+  return extractor(query);
 };
+
+const getAllElementsByCSS = (query: string) => {
+  return document.querySelectorAll(query);
+};
+
+const getElements = (locator: Locator) => {
+
+  const { query } = locator;
+
+  if (!query)
+    throw new Error(`Please define a selector`);
+
+  return getAllElementsByCSS(query);
+}
 
 const extractText = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
-  const element = locator ? getElement(locator) : null;
+  const collection = parameters['collection'];
+
+  const innerText = (element: Node) => {
+    const stripText = parameters['strip'];
+    const str = element.textContent;
+    return str && stripText ? str.trim() : str;
+  };
+
+  if (collection) {
+    const elements = getElements(locator);
+
+    if (!elements) 
+      throw new Error(`Elements were not found with selector: ${locator.query}`);
+
+    return [...elements].map(innerText);
+  }
+
+  const element = getElement(locator);
 
   if (!element)
     throw new Error(`Element could not be found with selector: ${locator.query}`);
 
-  const stripText = parameters['strip'];
-  const str    = element.textContent;
-
-  return str && stripText ? str.trim() : str;
+  return innerText(element);
 };
 
 const extractAttribute = async ({ parameters }: Command) => {
 
   const locator = parameters['locator'];
-  const element = locator ? getElement(locator) : null;
+  const collection = parameters['collection'];
+  const attributeName = parameters['attribute'];
+
+  if (!attributeName)
+    throw new Error(`Missing attribute name`);
+
+  const getAttribute = (element: Element) => {
+    const stripText = parameters['strip'];
+    const value = attributeName ? element.getAttribute(attributeName) : null;
+    return value && stripText ? value.trim() : value;
+  };
+
+  if (collection) {
+    const elements = getElements(locator);
+
+    if (!elements) 
+      throw new Error(`Elements were not found with selector: ${locator.query}`);
+
+    return [...elements].map(getAttribute);
+  }
+
+  const element = getElement(locator);
 
   if (!(element instanceof Element))
     throw new Error(`Element could not be found with selector: ${locator.query}`);
 
-  const name = parameters['attribute'];
-
-  if (!name)
-    throw new Error(`Missing attribute name`);
-
-  const stripText = parameters['strip'];
-  const attribute = name ? element.getAttribute(name) : null;
-
-  return attribute && stripText ? attribute.trim() : attribute;
+  return getAttribute(element);
 }
 
 const extractUrl = async () => {
