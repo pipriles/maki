@@ -3,28 +3,38 @@ import browser from 'webextension-polyfill';
 import { store, select } from '../store';
 import { getActiveTab, commandSelectors, getRecipeCommands } from '../store/selectors';
 import { changeRunningState, changeActiveTab } from '../store/slices/app';
-import { changeCommand } from '../store/slices/command';
-import { pushMessage, upsertResult } from '../store/slices/recipe';
+import { changeCommand, resetAllCommandStatus } from '../store/slices/command';
+import { changeRecipe, pushMessage, upsertResult } from '../store/slices/recipe';
 import { makeResponse, makeErrorResponse, delay, hasOwnProperty, } from '../common/utils';
 import { Command, Recipe, Message, Executor, Response } from '../models';
 
-const openUrl: Executor = async ({ parameters }: Command) => {
+const openUrl = async (url: string) => {
+  const activeTab = select(getActiveTab);
+  let update = undefined;
+
+  if (activeTab !== undefined && activeTab.id) {
+    update = await browser.tabs.update(activeTab.id, { url });
+    store.dispatch(changeActiveTab(update));
+  }
+
+  return update;
+};
+
+const openCommandUrl: Executor = async ({ parameters }: Command) => {
 
   const url = parameters.url;
-  const activeTab = select(getActiveTab);
 
   if (!url) 
     throw new Error('Missing url to be open');
 
-  browser.tabs.update(activeTab?.id, { url });
-
+  await openUrl(url);
   return url
 };
 
 /* Commands that need to use background script browser api */
 
 const commandExecutorMap: Record<string, Executor> = {
-  'OPEN': openUrl
+  'OPEN': openCommandUrl
 };
 
 export const sendCommand = async (command: Command): Promise<Response> => {
@@ -154,27 +164,60 @@ export const runSingleCommand = async (command: Command) => {
 
 export const runCommands = async (recipe: Recipe) => {
 
-  const isRunning = select(state => state.app.running);
-  if (isRunning) return;
-
   const commands = select(state => getRecipeCommands(state, recipe.id));
-  store.dispatch(changeRunningState(true));
 
   for (const cmd of commands) {
 
     const isRunning = select(state => state.app.running);
-    if (!isRunning) return;
+    if (!isRunning) return false;
 
     if (cmd.commandStatus === 'done')
       continue;
 
-    if(!await runSingleCommand(cmd)) 
-      break;
+    if(!await runSingleCommand(cmd)) {
+      return false;
+    }
 
     /* Execution speed */
-    await delay(500)
+    await delay(recipe.executionSpeed)
   }
 
+  return true;
+};
+
+const setCurrentUrl = (recipe: Recipe, url?: string) => {
+  return store.dispatch(changeRecipe({ id: recipe.id, changes: { currentInput: url } }));
+}
+
+export const playRecipe = async (recipe: Recipe) => {
+
+  const url = recipe.currentInput;
+  const index = recipe.inputs.findIndex(input => input === url);
+  const inputs = recipe.inputs.slice(index !== -1 ? index : 0) ?? recipe.inputs;
+
+  console.log(recipe.inputs, index);
+
+  const isRunning = select(state => state.app.running);
+  if (isRunning) return;
+
+  store.dispatch(changeRunningState(true));
+
+  for (const url of inputs) {
+
+    updateRecipeLog(recipe.id, `Scraping URL: ${url}`);
+    setCurrentUrl(recipe, url);
+    await openUrl(url);
+
+    if (!await runCommands(recipe)) {
+      console.log('Recipe stopped executing');
+      store.dispatch(changeRunningState(false));
+      return;
+    }
+
+    store.dispatch(resetAllCommandStatus());
+  } 
+  
+  setCurrentUrl(recipe, undefined);
   store.dispatch(changeRunningState(false));
 };
 

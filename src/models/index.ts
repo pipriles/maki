@@ -60,6 +60,7 @@ export interface Recipe {
   logger: string[];
   inputs: string[];
   output: Result[];
+  currentInput?: string;
 }
 
 export interface Result {

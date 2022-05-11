@@ -119,7 +119,7 @@ export const recipeSlice = createSlice({
 
       if (recipe === undefined) return;
       recipe.inputs = [];
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

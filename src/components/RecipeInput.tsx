@@ -36,6 +36,9 @@ const useStyles = createAppUseStyles(theme => ({
     padding: [theme.spacing(.75), 0, theme.spacing(1), theme.spacing(1)],
     fontSize: theme.sizes(1.5),
     border: "none",
+    width: 0,
+    whiteSpace: "nowrap",
+    overflow: "hidden",
   },
   input: {
     flexGrow: 1,
@@ -81,6 +84,7 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   // Bulk import file
   // Validate url input
   // Use hotkeys to make it faster
+  // Use virtual lists to avoid rendering all inputs
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
@@ -140,7 +144,7 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
   const renderInputs = inputs.map((url, index) => {
     return (
       <div className={styles.row} key={index}>
-        <input className={styles.url} value={url} />
+        <span className={styles.url}>{url}</span>
         <button onClick={handleUrlRemove(index)} className={styles.remove}>
           <MdDeleteOutline />
         </button>
