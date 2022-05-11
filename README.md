@@ -43,11 +43,15 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add export feature
 - [x] Add recipe url inputs
 - [ ] Add button to clear output
-- [ ] Changed current tab select mechanism
-- [ ] Automatically add input from current URL to recipe
+- [ ] Add CSV support to export
+- [ ] Allow to add more recipes
+- [ ] Add import / export recipe
 - [ ] Improve select element on document
 - [ ] Show matches count
+- [ ] Transform extracted data (Compute url relative paths)
 - [ ] Implement ability detect a selector shared in multiple elements
 - [ ] Highlight elements being selected by query
 - [ ] Show sample of data extracted below selector parameters
+- [ ] Changed current tab select mechanism
 - [ ] Allow commands to be skipped
+- [ ] Add button to add current URL to recipe inputs

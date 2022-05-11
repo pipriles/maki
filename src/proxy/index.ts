@@ -191,16 +191,21 @@ const setCurrentUrl = (recipe: Recipe, url?: string) => {
 
 export const playRecipe = async (recipe: Recipe) => {
 
+  const activeTab = select(getActiveTab);
   const url = recipe.currentInput;
   const index = recipe.inputs.findIndex(input => input === url);
   const inputs = recipe.inputs.slice(index !== -1 ? index : 0) ?? recipe.inputs;
-
-  console.log(recipe.inputs, index);
 
   const isRunning = select(state => state.app.running);
   if (isRunning) return;
 
   store.dispatch(changeRunningState(true));
+
+  /* If recipe has no inputs run on current page */
+  if (recipe.inputs.length <= 0) {
+    updateRecipeLog(recipe.id, `Scraping URL: ${activeTab?.url}`);
+    await runCommands(recipe);
+  }
 
   for (const url of inputs) {
 
@@ -209,7 +214,6 @@ export const playRecipe = async (recipe: Recipe) => {
     await openUrl(url);
 
     if (!await runCommands(recipe)) {
-      console.log('Recipe stopped executing');
       store.dispatch(changeRunningState(false));
       return;
     }
