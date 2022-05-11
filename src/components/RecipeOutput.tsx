@@ -41,13 +41,16 @@ const useStyles = createAppUseStyles(theme => ({
     flexGrow: 2,
     flexBasis: "65%",
     padding: [theme.spacing(.5), theme.spacing(1)],
+    width: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   text: {
     display: "block",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    maxWidth: 320,
   },
   button: {
     display: "flex",
@@ -175,13 +178,12 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
           </span>
         </Toolbar.ToolbarItem>
 
-        <Toolbar.ToolbarItem>
+        <Toolbar.ToolbarItem style={{ flexGrow: 1, width: 0, }}>
           <span className={styles.text}>
             {resultLabel}
           </span>
         </Toolbar.ToolbarItem>
 
-        <Toolbar.ToolbarSpacer />
         <Toolbar.ToolbarDivider />
 
         <Toolbar.ToolbarItem>
