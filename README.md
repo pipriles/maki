@@ -42,7 +42,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Fix current tab not refreshing
 - [x] Add export feature
 - [x] Add recipe url inputs
-- [ ] Add button to clear output
+- [x] Add button to clear output
 - [ ] Add CSV support to export
 - [ ] Allow to add more recipes
 - [ ] Add import / export recipe
