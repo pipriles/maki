@@ -1,7 +1,7 @@
 import React from 'react';
 import { batch } from 'react-redux';
 import { MdAdd, MdDelete, MdDeleteOutline } from 'react-icons/md';
-import { AiOutlineImport } from 'react-icons/ai';
+import { AiOutlineImport, AiFillDelete } from 'react-icons/ai';
 
 import { addInput, removeInput, clearInput } from '../store/slices/recipe';
 import { useAppDispatch } from '../store/hooks';
@@ -186,9 +186,9 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
           <button 
             onClick={handleClearInput} 
             className={styles.button} 
-            style={{ fontSize: 18 }}
+            style={{ fontSize: 16 }}
             title="Clear URLs">
-            <MdDelete />
+            <AiFillDelete />
           </button>
         </Toolbar.ToolbarItem>
 

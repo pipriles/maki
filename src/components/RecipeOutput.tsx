@@ -5,12 +5,13 @@ import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getRecipeDataFields, getActiveTab } from '../store/selectors';
 import { changeRecipe } from '../store/slices/recipe';
 import { Recipe } from '../models';
+import { isTruthy } from '../common/utils';
 
 import { MdKeyboardArrowUp, 
   MdKeyboardArrowRight, 
   MdKeyboardArrowLeft, 
   MdSync } from 'react-icons/md';
-import { AiOutlineExport } from 'react-icons/ai';
+import { AiOutlineExport, AiFillDelete } from 'react-icons/ai';
 
 import Toolbar from './Toolbar';
 
@@ -108,11 +109,13 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
 
     if (!fields || fields.length <= 0) return;
 
-    const results = recipe.output.map(result => {
-      const entries = fields.map(
-        ([commandId, field]) => [field, result.data[commandId]] as const);
-      return Object.fromEntries(entries);
-    });
+    const results = recipe.output
+      .map(result => {
+        const entries = fields.map(
+          ([commandId, field]) => [field, result.data[commandId]] as const);
+        return Object.fromEntries(entries);
+      })
+      .filter(isTruthy);
 
     const opts = {type : 'application/json'};
     const obj = new Blob([JSON.stringify(results, null, 2)], opts);
@@ -121,13 +124,18 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
     browser.downloads.download({ url });
   };
 
+  const handleClearOutput = async () => {
+    const payload = { id: recipe.id, changes: { output: [] } };
+    dispatch(changeRecipe(payload));
+  };
+
   React.useEffect(() => {
     syncCurrentTab();
   }, [recipe]);
 
   const currentResult = recipe.output[index];
   const resultLabel = currentResult?.label ?? activeTab?.url;
-  const resultState = currentResult ? `${index+1} of ${recipe.output.length}` : 'Preview';
+  const resultState = currentResult ? `${index+1} of ${recipe.output.length}` : '0 of 0';
 
   const recipeResult = fields?.map(([id, field]) => {
     const value = currentResult?.data[id];
@@ -165,8 +173,23 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
         </Toolbar.ToolbarItem>
 
         <Toolbar.ToolbarItem>
-          <button onClick={syncCurrentTab} className={styles.button}>
+          <button 
+            onClick={syncCurrentTab} 
+            className={styles.button}
+            title="Current URL"
+            aria-label="Current URL">
             <MdSync />
+          </button>
+        </Toolbar.ToolbarItem>
+
+        <Toolbar.ToolbarItem>
+          <button 
+            onClick={handleClearOutput}
+            className={styles.button} 
+            style={{ fontSize: 16 }}
+            title="Clear"
+            aria-label="Clear Output">
+            <AiFillDelete />
           </button>
         </Toolbar.ToolbarItem>
 
