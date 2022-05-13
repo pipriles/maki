@@ -1,17 +1,20 @@
-import browser from 'webextension-polyfill';
 import React from 'react';
+import browser from 'webextension-polyfill';
+import Papa from 'papaparse';
+
+import { AiOutlineExport, AiFillDelete } from 'react-icons/ai';
+import { 
+  MdKeyboardArrowUp, 
+  MdKeyboardArrowRight, 
+  MdKeyboardArrowLeft, 
+  MdSync } from 'react-icons/md';
+
 import { createAppUseStyles } from '../styles';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { getRecipeDataFields, getActiveTab } from '../store/selectors';
 import { changeRecipe } from '../store/slices/recipe';
 import { Recipe } from '../models';
 import { isTruthy } from '../common/utils';
-
-import { MdKeyboardArrowUp, 
-  MdKeyboardArrowRight, 
-  MdKeyboardArrowLeft, 
-  MdSync } from 'react-icons/md';
-import { AiOutlineExport, AiFillDelete } from 'react-icons/ai';
 
 import Toolbar from './Toolbar';
 
@@ -117,11 +120,23 @@ const RecipeOutput = ({ recipe }: RecipeOutputProps) => {
       })
       .filter(isTruthy);
 
-    const opts = {type : 'application/json'};
-    const obj = new Blob([JSON.stringify(results, null, 2)], opts);
-    const url = URL.createObjectURL(obj);
+    let filename = null;
+    let obj = null;
 
-    browser.downloads.download({ url });
+    if (recipe.exportFormat === "CSV") {
+      const resultAsCsv = Papa.unparse(results);
+      const opts = {type : 'text/csv'};
+      filename = `${recipe.name}.csv`;
+      obj = new File([resultAsCsv], filename, opts);
+
+    } else {
+      const opts = {type : 'application/json'};
+      filename = `${recipe.name}.json`;
+      obj = new File([JSON.stringify(results, null, 2)], filename, opts);
+    }
+
+    const url = URL.createObjectURL(obj);
+    browser.downloads.download({ url, filename });
   };
 
   const handleClearOutput = async () => {
