@@ -21,3 +21,12 @@ export const isPropertyOf = <X extends {}>(key: PropertyKey, obj: X): key is key
 }
 
 export const isTruthy = <T>(x: T | false | undefined | null | "" | 0): x is T => !!x;
+
+export const isValidHttpUrl = (s: unknown): s is string => {
+  if (typeof s !== 'string') return false;
+  let url;
+  try {
+    url = new URL(s);
+  } catch (e) { return false; }
+  return /https?/.test(url.protocol);
+}

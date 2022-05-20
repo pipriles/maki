@@ -1,12 +1,14 @@
 import React from 'react';
 import { batch } from 'react-redux';
-import { MdAdd, MdDelete, MdDeleteOutline } from 'react-icons/md';
+import { MdAdd, MdDeleteOutline } from 'react-icons/md';
 import { AiOutlineImport, AiFillDelete } from 'react-icons/ai';
+import Papa from 'papaparse';
 
 import { addInput, removeInput, clearInput } from '../store/slices/recipe';
 import { useAppDispatch } from '../store/hooks';
 import { createAppUseStyles } from '../styles';
 import { Recipe } from '../models';
+import { isValidHttpUrl } from '../common/utils';
 
 import Toolbar from './Toolbar';
 
@@ -137,7 +139,26 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
     event.preventDefault();
   };
 
-  const handleImport = () => {
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+    const file = event.target.files[0];
+    Papa.parse(file, { 
+      complete: (results) => {
+        batch(() => {
+          results.data.forEach((row) => {
+            if (!Array.isArray(row)) return;
+
+            const column = row[0];
+            if (!isValidHttpUrl(column)) return;
+
+            const recipeId = recipe.id;
+            const input = column.trim();
+            dispatch(addInput({ recipeId, input }));
+          });
+        });
+      }
+    });
+
   };
 
   const inputs = recipe.inputs;
@@ -193,9 +214,16 @@ const RecipeInput = ({ recipe }: RecipeInput) => {
         </Toolbar.ToolbarItem>
 
         <Toolbar.ToolbarItem padding="4px 6px">
-          <button onClick={handleImport} className={styles.button} title="Import">
+          <label htmlFor="import-file" className={styles.button} title="Import">
             <AiOutlineImport />
-          </button>
+          </label>
+          <input 
+            type="file" 
+            id="import-file" 
+            name="import-file" 
+            accept=".csv"
+            hidden
+            onChange={handleImport} />
         </Toolbar.ToolbarItem>
 
       </Toolbar>
