@@ -3,7 +3,7 @@ import { createAppUseStyles } from '../styles';
 import { ICommandParametersProps } from './utils';
 import { AiOutlineSelect } from 'react-icons/ai';
 
-import { locateElement } from '../proxy';
+import { locateElement } from '../middleware';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {

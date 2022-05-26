@@ -7,7 +7,7 @@ import { changeRunningState } from '../store/slices/app';
 import { resetAllCommandStatus } from '../store/slices/command';
 import { clearMessages, changeRecipe } from '../store/slices/recipe';
 import { createAppUseStyles } from '../styles';
-import { playRecipe } from '../proxy'
+import { playRecipe } from '../middleware'
 
 import CurrentTab from './CurrentTab';
 

@@ -36,7 +36,7 @@ import ContextMenuDivider from './ContextMenuDivider';
 import CommandStep from './CommandStep';
 
 import { useContextMenu } from './utils';
-import { runSingleCommandById } from '../proxy';
+import { runSingleCommandById } from '../middleware';
 
 const useStyles = createAppUseStyles(theme => ({
   root: {
