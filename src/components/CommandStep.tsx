@@ -21,7 +21,7 @@ const useStyles = createAppUseStyles(theme => ({
     '&:hover': {
       backgroundColor: theme.lighten(theme.palette.background, 0.5),
       '& > $icons': {
-        display: "flex",
+        visibility: "visible",
       },
     },
   },
@@ -35,7 +35,7 @@ const useStyles = createAppUseStyles(theme => ({
     fontSize: theme.sizes(1.5),
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
   },
-  commandLabel: {
+  input: {
     padding: [theme.spacing(0.5), theme.spacing(1)],
     fontSize: theme.sizes(1.75),
     backgroundColor: "transparent",
@@ -44,6 +44,26 @@ const useStyles = createAppUseStyles(theme => ({
     alignItems: "center",
     border: "none",
     cursor: "pointer",
+  },
+  commandLabel: {
+    display: "flex",
+    width: "100%",
+  },
+  commandField: {
+    display: "flex",
+    width: "100%",
+    position: "relative",
+    "&:before": {
+      content: "''",
+      display: 'block',
+      position: "absolute",
+      width: 1,
+      height: "50%",
+      top: "50%",
+      left: 0,
+      transform: "translateY(-50%)",
+      backgroundColor: theme.lighten(theme.palette.background, 0.75),
+    }
   },
   current: {
     backgroundColor: theme.lighten(theme.palette.background, 0.5),
@@ -61,7 +81,8 @@ const useStyles = createAppUseStyles(theme => ({
     borderLeft: ["2px", "solid", "#fd8b8b"],
   },
   icons: {
-    display: "none",
+    visibility: "hidden",
+    display: "flex",
     '& > button': {
       background: "none",
       color: theme.palette.typography.primary,
@@ -136,6 +157,11 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
     dispatch(changeCommand(payload));
   };
 
+  const onCommandFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const payload = { id: command.id, field: event.target.value };
+    dispatch(changeCommand(payload));
+  };
+
   const onCommandContextMenu = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     dispatch(setContextMenu({ command: command.id, left: event.clientX, top: event.clientY }));
@@ -170,12 +196,22 @@ const CommandStep = ({ command, index }: CommandStepProps) => {
         <span className={styles.index}>
           {index}
         </span>
-        <input 
-          className={styles.commandLabel} 
-          value={command.commandType} 
-          onChange={onCommandTypeChange}
-          onMouseDown={onInputMouseDown}
-        />
+        <div className={styles.commandLabel}>
+          <input 
+            className={styles.input} 
+            value={command.commandType} 
+            onChange={onCommandTypeChange}
+            onMouseDown={onInputMouseDown}
+          />
+        </div>
+        <div className={styles.commandField}>
+          <input 
+            className={styles.input} 
+            value={command.field} 
+            onChange={onCommandFieldChange}
+            onMouseDown={onInputMouseDown}
+          />
+        </div>
         <div className={styles.icons}>
           <button onClick={onMoreClick}>
             <MdMoreVert />
