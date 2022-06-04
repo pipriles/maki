@@ -46,6 +46,7 @@ To install the extension go to your Chrome Extensions tab and click __"Load unpa
 - [x] Add CSV support to export
 - [x] Show field name on command list
 - [ ] Add import / export recipe
+- [ ] Write tests
 - [ ] Improve select element on document
 - [ ] Allow to add more recipes
 - [ ] Show matches count
