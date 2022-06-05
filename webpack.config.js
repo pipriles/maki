@@ -41,7 +41,7 @@ module.exports = {
     }),
     new CopyPlugin({
       patterns: [
-        { from: "manifest.json", to: "." },
+        { from: "public/", to: "." },
       ],
     }),
   ]

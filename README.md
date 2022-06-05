@@ -1,4 +1,4 @@
-# Scaper
+# Maki
 
 This project is a Chrome Extension similar to Selenium IDE designed to automate web scraping processes.
 
